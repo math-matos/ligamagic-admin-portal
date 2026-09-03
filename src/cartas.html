@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Administrativo - Cartas</title>
+    <link rel="stylesheet" href="assets/css/estilo.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <div>
+            <h1>Gerenciador de Cartas</h1>
+            <p id="saudacao" class="texto-suave"></p>
+        </div>
+        <button type="button" id="botao-sair" class="botao botao-neutro">Sair</button>
+    </header>
+
+    <main class="conteudo">
+        <div class="barra-acoes">
+            <input type="search" id="campo-busca" placeholder="Buscar por nome, jogo, edição ou raridade...">
+            <button type="button" id="botao-nova-carta" class="botao botao-primario">+ Nova Carta</button>
+        </div>
+
+        <div class="tabela-container">
+            <table class="tabela-cartas">
+                <thead>
+                    <tr>
+                        <th>Imagem</th>
+                        <th>Nome (EN)</th>
+                        <th>Nome (PT)</th>
+                        <th>Card Game</th>
+                        <th>Edição</th>
+                        <th>Raridade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-cartas"></tbody>
+            </table>
+            <p id="estado-vazio" class="estado-vazio" hidden>Nenhuma carta encontrada.</p>
+            <p id="estado-carregando" class="estado-vazio">Carregando cartas...</p>
+        </div>
+    </main>
+
+    <p id="aviso" class="aviso" hidden></p>
+
+    <div id="modal-formulario" class="modal" hidden>
+        <div class="modal-caixa">
+            <h2 id="titulo-formulario">Nova Carta</h2>
+
+            <form id="form-carta" novalidate>
+                <input type="hidden" id="carta-id">
+
+                <div class="campo">
+                    <label for="nome-en">Nome da Carta em inglês *</label>
+                    <input type="text" id="nome-en" name="nome_en" required>
+                </div>
+
+                <div class="campo">
+                    <label for="nome-pt">Nome da Carta em português</label>
+                    <input type="text" id="nome-pt" name="nome_pt">
+                </div>
+
+                <div class="campo">
+                    <label for="card-game">Card Game *</label>
+                    <select id="card-game" name="card_game" required>
+                        <option value="">Selecione...</option>
+                        <option value="magic">Magic: The Gathering</option>
+                        <option value="pokemon">Pokémon</option>
+                        <option value="yugioh">Yu-Gi-Oh!</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="edicao">Edição da Carta *</label>
+                    <select id="edicao" name="edicao_id" required disabled>
+                        <option value="">Selecione um Card Game primeiro</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="raridade">Raridade da Carta *</label>
+                    <select id="raridade" name="raridade" required>
+                        <option value="">Selecione...</option>
+                        <option value="Comum">Comum</option>
+                        <option value="Incomum">Incomum</option>
+                        <option value="Rara">Rara</option>
+                        <option value="Ultra Rara">Ultra Rara</option>
+                        <option value="Secreta">Secreta</option>
+                        <option value="Mítica">Mítica</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="imagem">Imagem da Carta *</label>
+                    <input type="file" id="imagem" name="imagem" accept="image/jpeg,image/png,image/webp,image/gif">
+                    <img id="previa-imagem" class="previa-imagem" alt="Prévia da imagem" hidden>
+                </div>
+
+                <p id="erro-formulario" class="mensagem-erro" hidden></p>
+
+                <div class="modal-acoes">
+                    <button type="button" id="botao-cancelar" class="botao botao-neutro">Cancelar</button>
+                    <button type="submit" id="botao-salvar" class="botao botao-primario">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-exclusao" class="modal" hidden>
+        <div class="modal-caixa">
+            <h2>Excluir Carta</h2>
+            <p id="texto-exclusao"></p>
+            <p class="texto-suave">Essa ação não pode ser desfeita.</p>
+
+            <div class="modal-acoes">
+                <button type="button" id="botao-cancelar-exclusao" class="botao botao-neutro">Cancelar</button>
+                <button type="button" id="botao-confirmar-exclusao" class="botao botao-perigo">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/cartas.js"></script>
+    <script src="assets/js/formulario.js"></script>
+</body>
+</html>
