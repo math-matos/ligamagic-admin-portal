@@ -1094,12 +1094,7 @@ a { color: var(--primaria); }
     border-radius: 0;
 }
 
-/* Hub de seleção de jogo */
-.hub-jogos[hidden],
-.area-cartas[hidden] { display: none; }
-
-body.tela-hub .filtros-sidebar { display: none; }
-
+/* Hub de seleção de jogo (home.html) */
 .hub-cabecalho {
     margin-bottom: 1.6rem;
 }

@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/dados-jogos.php';
 
 exigirAutenticacao();
 
@@ -29,26 +30,26 @@ function listarCartas(): void
 
 function validarCampos(): array
 {
-    $jogosValidos = ['magic', 'pokemon', 'yugioh'];
-
     $nomeEn = trim($_POST['nome_en'] ?? '');
     $nomePt = trim($_POST['nome_pt'] ?? '');
     $cardGame = $_POST['card_game'] ?? '';
     $edicaoId = trim($_POST['edicao_id'] ?? '');
-    $edicaoNome = trim($_POST['edicao_nome'] ?? '');
     $raridade = trim($_POST['raridade'] ?? '');
 
     if ($nomeEn === '') {
         responder(422, ['erro' => 'O nome da carta em inglês é obrigatório']);
     }
-    if (!in_array($cardGame, $jogosValidos, true)) {
+    if (!isset(EDICOES_POR_JOGO[$cardGame])) {
         responder(422, ['erro' => 'Selecione um card game válido']);
     }
-    if ($edicaoId === '' || $edicaoNome === '') {
-        responder(422, ['erro' => 'Selecione a edição da carta']);
+
+    $edicoes = array_column(EDICOES_POR_JOGO[$cardGame], 'name', 'id');
+
+    if (!isset($edicoes[$edicaoId])) {
+        responder(422, ['erro' => 'Selecione uma edição válida para o card game']);
     }
-    if ($raridade === '') {
-        responder(422, ['erro' => 'Informe a raridade da carta']);
+    if (!in_array($raridade, RARIDADES_POR_JOGO[$cardGame], true)) {
+        responder(422, ['erro' => 'Selecione uma raridade válida para o card game']);
     }
 
     return [
@@ -56,7 +57,7 @@ function validarCampos(): array
         'nome_pt' => $nomePt !== '' ? $nomePt : null,
         'card_game' => $cardGame,
         'edicao_id' => $edicaoId,
-        'edicao_nome' => $edicaoNome,
+        'edicao_nome' => $edicoes[$edicaoId],
         'raridade' => $raridade,
     ];
 }
@@ -181,8 +182,7 @@ function atualizarCarta(int $id): void
 
 function excluirCarta(): void
 {
-    parse_str($_SERVER['QUERY_STRING'] ?? '', $query);
-    $id = (int) ($query['id'] ?? 0);
+    $id = (int) ($_GET['id'] ?? 0);
 
     if ($id <= 0) {
         responder(422, ['erro' => 'Informe o id da carta']);

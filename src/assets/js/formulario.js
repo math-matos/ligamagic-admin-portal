@@ -19,32 +19,12 @@ const TIPOS_IMAGEM_ACEITOS = ['image/jpeg', 'image/png', 'image/webp'];
 const TAMANHO_MAX_IMAGEM = 5 * 1024 * 1024;
 const MAX_CARACTERES_NOME = 30;
 
-function campoDe(controle) {
-    return controle.closest('.campo');
-}
-
-function definirErroCampo(campo, mensagem) {
-    if (!campo) return;
-    campo.classList.add('invalido');
-    let erro = campo.querySelector('.campo-erro');
-    if (!erro) {
-        erro = document.createElement('p');
-        erro.className = 'campo-erro';
-        erro.setAttribute('role', 'alert');
-        campo.appendChild(erro);
-    }
-    erro.textContent = mensagem;
-}
-
-function limparErroCampo(campo) {
-    if (!campo) return;
-    campo.classList.remove('invalido');
-    const erro = campo.querySelector('.campo-erro');
-    if (erro) erro.remove();
-}
+Object.entries(NOMES_JOGOS).forEach(([valor, nome]) => {
+    campoCardGame.add(new Option(nome, valor));
+});
 
 function limparTodosErros() {
-    formCarta.querySelectorAll('.campo.invalido').forEach(limparErroCampo);
+    limparErrosDoForm(formCarta);
     erroFormulario.hidden = true;
 }
 
@@ -144,13 +124,7 @@ async function carregarEdicoes(jogo) {
         }
 
         campoEdicao.innerHTML = '<option value="">Selecione...</option>';
-
-        dados.edicoes.forEach((edicao) => {
-            const opcao = document.createElement('option');
-            opcao.value = edicao.id;
-            opcao.textContent = edicao.name;
-            campoEdicao.appendChild(opcao);
-        });
+        dados.edicoes.forEach((edicao) => campoEdicao.add(new Option(edicao.name, edicao.id)));
 
         campoEdicao.disabled = false;
 
@@ -177,13 +151,7 @@ async function carregarRaridades(jogo) {
         }
 
         campoRaridade.innerHTML = '<option value="">Selecione...</option>';
-
-        dados.raridades.forEach((raridade) => {
-            const opcao = document.createElement('option');
-            opcao.value = raridade;
-            opcao.textContent = raridade;
-            campoRaridade.appendChild(opcao);
-        });
+        dados.raridades.forEach((raridade) => campoRaridade.add(new Option(raridade, raridade)));
 
         campoRaridade.disabled = false;
 
@@ -346,7 +314,6 @@ formCarta.addEventListener('submit', async (evento) => {
     dados.append('nome_pt', campoNomePt.value.trim());
     dados.append('card_game', campoCardGame.value);
     dados.append('edicao_id', campoEdicao.value);
-    dados.append('edicao_nome', campoEdicao.options[campoEdicao.selectedIndex].textContent);
     dados.append('raridade', campoRaridade.value);
 
     if (campoImagem.files[0]) {

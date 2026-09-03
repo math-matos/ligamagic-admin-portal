@@ -34,7 +34,7 @@ formLogin.addEventListener('submit', async (evento) => {
             return;
         }
 
-        window.location.href = 'cartas.html';
+        window.location.href = 'home.html';
     } catch (erro) {
         erroLogin.textContent = 'Falha de conexão com o servidor.';
         erroLogin.hidden = false;

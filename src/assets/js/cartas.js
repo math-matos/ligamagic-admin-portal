@@ -1,9 +1,3 @@
-const nomesJogos = {
-    magic: 'Magic: The Gathering',
-    pokemon: 'Pokémon',
-    yugioh: 'Yu-Gi-Oh!'
-};
-
 function normalizarTexto(texto) {
     return (texto || '')
         .toLowerCase()
@@ -14,6 +8,34 @@ function normalizarTexto(texto) {
 function classeRaridade(raridade) {
     const base = normalizarTexto(raridade).replace(/\s+/g, '-');
     return 'badge-' + base;
+}
+
+function criarEl(tag, classe = '', texto = '') {
+    const el = document.createElement(tag);
+    if (classe) el.className = classe;
+    if (texto) el.textContent = texto;
+    return el;
+}
+
+function criarChipJogo(carta) {
+    return criarEl('span', 'chip chip-jogo-' + carta.card_game, NOMES_JOGOS[carta.card_game] || carta.card_game);
+}
+
+function criarBadgeRaridade(carta) {
+    return criarEl('span', 'badge ' + classeRaridade(carta.raridade), carta.raridade);
+}
+
+function comBandeira(el, bandeira, texto) {
+    el.innerHTML = bandeira;
+    el.appendChild(document.createTextNode(texto));
+    return el;
+}
+
+function criarIconeSemImagem(classe) {
+    const vazia = criarEl('span', classe);
+    vazia.setAttribute('aria-hidden', 'true');
+    vazia.innerHTML = ICONES.IMAGEM_VAZIA;
+    return vazia;
 }
 
 let cartas = [];
@@ -76,6 +98,42 @@ function renderizarContadoresEstaticos() {
     sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="raridade"]').forEach((checkbox) => {
         const total = cartas.filter((carta) => carta.raridade === checkbox.value).length;
         definirContagem(checkbox, total);
+    });
+}
+
+function criarOpcaoFiltro(grupo, valor, texto) {
+    const label = criarEl('label', 'filtro-opcao');
+
+    const input = criarEl('input', 'filtro-checkbox');
+    input.type = 'checkbox';
+    input.dataset.grupo = grupo;
+    input.value = valor;
+
+    const caixa = criarEl('span', 'filtro-caixa');
+    caixa.setAttribute('aria-hidden', 'true');
+
+    label.append(input, caixa, criarEl('span', 'filtro-texto', texto), criarEl('span', 'filtro-contagem'));
+    return label;
+}
+
+function montarOpcoesFixasDosFiltros() {
+    Object.entries(NOMES_JOGOS).forEach(([valor, nome]) => {
+        listaFiltroJogo.appendChild(criarOpcaoFiltro('jogo', valor, nome));
+    });
+
+    const jogosPorRaridade = new Map();
+    Object.entries(RARIDADES_POR_JOGO).forEach(([jogo, raridades]) => {
+        raridades.forEach((raridade) => {
+            const jogos = jogosPorRaridade.get(raridade) || [];
+            jogos.push(jogo);
+            jogosPorRaridade.set(raridade, jogos);
+        });
+    });
+
+    jogosPorRaridade.forEach((jogos, raridade) => {
+        const opcao = criarOpcaoFiltro('raridade', raridade, raridade);
+        opcao.dataset.jogos = jogos.join(' ');
+        listaFiltroRaridade.appendChild(opcao);
     });
 }
 
@@ -177,38 +235,16 @@ function renderizarListaEdicao() {
         .sort((a, b) => a[1].nome.localeCompare(b[1].nome, 'pt-BR'));
 
     if (!entradas.length) {
-        const vazio = document.createElement('p');
-        vazio.className = 'filtro-vazio';
-        vazio.textContent = mapa.size ? 'Nenhuma edição encontrada.' : 'Nenhuma edição disponível.';
-        listaFiltroEdicao.appendChild(vazio);
+        const texto = mapa.size ? 'Nenhuma edição encontrada.' : 'Nenhuma edição disponível.';
+        listaFiltroEdicao.appendChild(criarEl('p', 'filtro-vazio', texto));
         return;
     }
 
     entradas.forEach(([chave, info]) => {
-        const label = document.createElement('label');
-        label.className = 'filtro-opcao';
-
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.className = 'filtro-checkbox';
-        input.dataset.grupo = 'edicao';
-        input.value = chave;
-        input.checked = filtros.edicoes.has(chave);
-
-        const caixa = document.createElement('span');
-        caixa.className = 'filtro-caixa';
-        caixa.setAttribute('aria-hidden', 'true');
-
-        const texto = document.createElement('span');
-        texto.className = 'filtro-texto';
-        texto.textContent = info.nome;
-
-        const contagem = document.createElement('span');
-        contagem.className = 'filtro-contagem';
-        contagem.textContent = String(info.total);
-
-        label.append(input, caixa, texto, contagem);
-        listaFiltroEdicao.appendChild(label);
+        const opcao = criarOpcaoFiltro('edicao', chave, info.nome);
+        opcao.querySelector('.filtro-checkbox').checked = filtros.edicoes.has(chave);
+        opcao.querySelector('.filtro-contagem').textContent = String(info.total);
+        listaFiltroEdicao.appendChild(opcao);
     });
 }
 
@@ -293,25 +329,6 @@ backdropFiltros.addEventListener('click', fecharFiltrosMobile);
 const CHAVE_VISUALIZACAO = 'cartas-visualizacao';
 let modoVisualizacao = localStorage.getItem(CHAVE_VISUALIZACAO) === 'lista' ? 'lista' : 'grade';
 
-const pilhaModais = [];
-
-function empilharModal(fecharFn) {
-    pilhaModais.push(fecharFn);
-}
-
-function desempilharModal(fecharFn) {
-    const indice = pilhaModais.lastIndexOf(fecharFn);
-    if (indice !== -1) {
-        pilhaModais.splice(indice, 1);
-    }
-}
-
-document.addEventListener('keydown', (evento) => {
-    if (evento.key === 'Escape' && pilhaModais.length > 0) {
-        pilhaModais[pilhaModais.length - 1]();
-    }
-});
-
 async function verificarSessao() {
     try {
         const resposta = await fetch('api/sessao.php');
@@ -380,7 +397,8 @@ async function carregarCartas() {
         cartas = dados.cartas || [];
         renderizarContadoresEstaticos();
         renderizarListaEdicao();
-        renderizarHub();
+        sincronizarRaridadesComJogo();
+        atualizarEstadoFiltros();
         renderizarCartas();
     } catch (erro) {
         listaCartas.innerHTML = '';
@@ -416,7 +434,7 @@ function filtrarCartas() {
         const campos = [
             carta.nome_en,
             carta.nome_pt || '',
-            nomesJogos[carta.card_game] || '',
+            NOMES_JOGOS[carta.card_game] || '',
             carta.edicao_nome,
             carta.raridade
         ];
@@ -474,55 +492,36 @@ function criarBotoesAcao(carta) {
 function criarLinhaCarta(carta) {
     const linha = document.createElement('tr');
 
-    const celulaImagem = document.createElement('td');
+    const celulaImagem = criarEl('td');
     if (carta.imagem) {
-        const imagem = document.createElement('img');
+        const imagem = criarEl('img', 'miniatura ampliavel');
         imagem.src = carta.imagem;
         imagem.alt = carta.nome_en;
-        imagem.className = 'miniatura ampliavel';
         imagem.loading = 'lazy';
         imagem.title = 'Clique para ampliar';
         imagem.addEventListener('click', () => abrirVisualizadorImagem(carta.imagem, carta.nome_en));
         celulaImagem.appendChild(imagem);
     } else {
-        const vazia = document.createElement('span');
-        vazia.className = 'miniatura-vazia';
-        vazia.setAttribute('aria-hidden', 'true');
-        vazia.innerHTML = ICONES.IMAGEM_VAZIA;
-        celulaImagem.appendChild(vazia);
+        celulaImagem.appendChild(criarIconeSemImagem('miniatura-vazia'));
     }
 
-    const celulaNomeEn = document.createElement('td');
-    celulaNomeEn.className = 'celula-nome';
-    celulaNomeEn.innerHTML = ICONES.BANDEIRA_EUA;
-    celulaNomeEn.appendChild(document.createTextNode(carta.nome_en));
+    const celulaNomeEn = comBandeira(criarEl('td', 'celula-nome'), ICONES.BANDEIRA_EUA, carta.nome_en);
 
-    const celulaNomePt = document.createElement('td');
+    const celulaNomePt = criarEl('td');
     if (carta.nome_pt) {
-        celulaNomePt.innerHTML = ICONES.BANDEIRA_BRASIL;
-        celulaNomePt.appendChild(document.createTextNode(carta.nome_pt));
+        comBandeira(celulaNomePt, ICONES.BANDEIRA_BRASIL, carta.nome_pt);
     } else {
         celulaNomePt.textContent = '—';
         celulaNomePt.style.color = 'var(--texto-suave)';
     }
 
-    const celulaJogo = document.createElement('td');
-    const chipJogo = document.createElement('span');
-    chipJogo.className = 'chip chip-jogo-' + carta.card_game;
-    chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
-    celulaJogo.appendChild(chipJogo);
+    const celulaJogo = criarEl('td');
+    celulaJogo.appendChild(criarChipJogo(carta));
 
-    const celulaEdicao = document.createElement('td');
-    celulaEdicao.textContent = carta.edicao_nome;
+    const celulaRaridade = criarEl('td');
+    celulaRaridade.appendChild(criarBadgeRaridade(carta));
 
-    const celulaRaridade = document.createElement('td');
-    const badge = document.createElement('span');
-    badge.className = 'badge ' + classeRaridade(carta.raridade);
-    badge.textContent = carta.raridade;
-    celulaRaridade.appendChild(badge);
-
-    const celulaAcoes = document.createElement('td');
-    celulaAcoes.className = 'celula-acoes';
+    const celulaAcoes = criarEl('td', 'celula-acoes');
     const { botaoEditar, botaoExcluir } = criarBotoesAcao(carta);
     celulaAcoes.append(botaoEditar, botaoExcluir);
 
@@ -531,7 +530,7 @@ function criarLinhaCarta(carta) {
         celulaNomeEn,
         celulaNomePt,
         celulaJogo,
-        celulaEdicao,
+        criarEl('td', '', carta.edicao_nome),
         celulaRaridade,
         celulaAcoes
     );
@@ -540,13 +539,11 @@ function criarLinhaCarta(carta) {
 }
 
 function criarCardCarta(carta) {
-    const card = document.createElement('div');
-    card.className = 'carta-card';
+    const card = criarEl('div', 'carta-card');
 
-    const areaImagem = document.createElement('div');
-    areaImagem.className = 'carta-card-imagem';
+    const areaImagem = criarEl('div', 'carta-card-imagem');
     if (carta.imagem) {
-        const imagem = document.createElement('img');
+        const imagem = criarEl('img');
         imagem.src = carta.imagem;
         imagem.alt = carta.nome_en;
         imagem.loading = 'lazy';
@@ -555,51 +552,22 @@ function criarCardCarta(carta) {
         areaImagem.title = 'Clique para ampliar';
         areaImagem.addEventListener('click', () => abrirVisualizadorImagem(carta.imagem, carta.nome_en));
     } else {
-        const vazia = document.createElement('span');
-        vazia.className = 'carta-sem-imagem';
-        vazia.setAttribute('aria-hidden', 'true');
-        vazia.innerHTML = ICONES.IMAGEM_VAZIA;
-        areaImagem.appendChild(vazia);
+        areaImagem.appendChild(criarIconeSemImagem('carta-sem-imagem'));
     }
+    areaImagem.appendChild(criarChipJogo(carta));
 
-    const chipJogo = document.createElement('span');
-    chipJogo.className = 'chip chip-jogo-' + carta.card_game;
-    chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
-    areaImagem.appendChild(chipJogo);
-
-    const corpo = document.createElement('div');
-    corpo.className = 'carta-card-corpo';
-
-    const nomeEn = document.createElement('span');
-    nomeEn.className = 'carta-card-nome';
-    nomeEn.innerHTML = ICONES.BANDEIRA_EUA;
-    nomeEn.appendChild(document.createTextNode(carta.nome_en));
-    corpo.appendChild(nomeEn);
+    const corpo = criarEl('div', 'carta-card-corpo');
+    corpo.appendChild(comBandeira(criarEl('span', 'carta-card-nome'), ICONES.BANDEIRA_EUA, carta.nome_en));
 
     if (carta.nome_pt) {
-        const nomePt = document.createElement('span');
-        nomePt.className = 'carta-card-nome-pt';
-        nomePt.innerHTML = ICONES.BANDEIRA_BRASIL;
-        nomePt.appendChild(document.createTextNode(carta.nome_pt));
-        corpo.appendChild(nomePt);
+        corpo.appendChild(comBandeira(criarEl('span', 'carta-card-nome-pt'), ICONES.BANDEIRA_BRASIL, carta.nome_pt));
     }
 
-    const meta = document.createElement('div');
-    meta.className = 'carta-card-meta';
-
-    const edicao = document.createElement('span');
-    edicao.className = 'carta-card-edicao';
-    edicao.textContent = carta.edicao_nome;
-
-    const badge = document.createElement('span');
-    badge.className = 'badge ' + classeRaridade(carta.raridade);
-    badge.textContent = carta.raridade;
-
-    meta.append(edicao, badge);
+    const meta = criarEl('div', 'carta-card-meta');
+    meta.append(criarEl('span', 'carta-card-edicao', carta.edicao_nome), criarBadgeRaridade(carta));
     corpo.appendChild(meta);
 
-    const acoes = document.createElement('div');
-    acoes.className = 'carta-card-acoes';
+    const acoes = criarEl('div', 'carta-card-acoes');
     const { botaoEditar, botaoExcluir } = criarBotoesAcao(carta);
     acoes.append(botaoEditar, botaoExcluir);
     corpo.appendChild(acoes);
@@ -699,68 +667,26 @@ document.getElementById('botao-sair').addEventListener('click', async () => {
     window.location.href = 'index.html';
 });
 
-const hubJogos = document.getElementById('hub-jogos');
-const areaCartas = document.getElementById('area-cartas');
 const botaoVoltarHub = document.getElementById('botao-voltar-hub');
 
-function renderizarHub() {
-    hubJogos.querySelectorAll('.hub-card-contagem').forEach((elemento) => {
-        const alvo = elemento.dataset.contagem;
-        const total = alvo === 'todas'
-            ? cartas.length
-            : cartas.filter((carta) => carta.card_game === alvo).length;
-        const rotulo = total === 1 ? '1 carta' : `${total} cartas`;
-        elemento.textContent = rotulo;
-    });
-}
-
-function entrarModoCartas(jogo) {
-    filtros.jogos.clear();
-    sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="jogo"]').forEach((checkbox) => {
-        checkbox.checked = jogo !== 'todas' && checkbox.value === jogo;
-    });
-    if (jogo !== 'todas') {
-        filtros.jogos.add(jogo);
+function aplicarFiltroInicial() {
+    const parametros = new URLSearchParams(window.location.search);
+    const jogo = parametros.get('jogo');
+    if (!jogo || jogo === 'todas' || !NOMES_JOGOS[jogo]) {
+        return;
     }
 
-    renderizarListaEdicao();
-    sincronizarRaridadesComJogo();
-    atualizarEstadoFiltros();
-    renderizarCartas();
-
-    document.body.classList.remove('tela-hub');
-    hubJogos.hidden = true;
-    areaCartas.hidden = false;
-    window.scrollTo({ top: 0 });
-}
-
-function entrarModoHub() {
-    campoBusca.value = '';
-    filtros.jogos.clear();
-    filtros.raridades.clear();
-    filtros.edicoes.clear();
-    sidebarFiltros.querySelectorAll('.filtro-checkbox').forEach((checkbox) => {
-        checkbox.checked = false;
+    filtros.jogos.add(jogo);
+    sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="jogo"]').forEach((checkbox) => {
+        checkbox.checked = checkbox.value === jogo;
     });
-    renderizarListaEdicao();
-    filtrarOpcoesRaridade();
-    atualizarEstadoFiltros();
-    renderizarCartas();
-
-    document.body.classList.add('tela-hub');
-    areaCartas.hidden = true;
-    hubJogos.hidden = false;
-    fecharFiltrosMobile();
-    window.scrollTo({ top: 0 });
 }
 
-hubJogos.querySelectorAll('.hub-card').forEach((card) => {
-    card.addEventListener('click', () => entrarModoCartas(card.dataset.jogo));
+botaoVoltarHub.addEventListener('click', () => {
+    window.location.href = 'home.html';
 });
 
-botaoVoltarHub.addEventListener('click', entrarModoHub);
-
-document.body.classList.add('tela-hub');
-
+montarOpcoesFixasDosFiltros();
+aplicarFiltroInicial();
 verificarSessao();
 carregarCartas();

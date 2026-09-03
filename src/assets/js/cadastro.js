@@ -7,35 +7,6 @@ const campoUsuario = document.getElementById('usuario');
 const campoSenha = document.getElementById('senha');
 const campoConfirmarSenha = document.getElementById('confirmar-senha');
 
-function campoDe(controle) {
-    return controle.closest('.campo');
-}
-
-function definirErroCampo(campo, mensagem) {
-    if (!campo) return;
-    campo.classList.add('invalido');
-    let erro = campo.querySelector('.campo-erro');
-    if (!erro) {
-        erro = document.createElement('p');
-        erro.className = 'campo-erro';
-        erro.setAttribute('role', 'alert');
-        campo.appendChild(erro);
-    }
-    erro.textContent = mensagem;
-}
-
-function limparErroCampo(campo) {
-    if (!campo) return;
-    campo.classList.remove('invalido');
-    const erro = campo.querySelector('.campo-erro');
-    if (erro) erro.remove();
-}
-
-function limparTodosErros() {
-    formCadastro.querySelectorAll('.campo.invalido').forEach(limparErroCampo);
-    erroCadastro.hidden = true;
-}
-
 function validarCadastro() {
     const erros = [];
 
@@ -65,12 +36,13 @@ function validarCadastro() {
 
 formCadastro.addEventListener('submit', async (evento) => {
     evento.preventDefault();
-    limparTodosErros();
+    limparErrosDoForm(formCadastro);
+    erroCadastro.hidden = true;
 
     const erros = validarCadastro();
 
     if (erros.length) {
-        erros.forEach(({ controle, mensagem }) => definirErroCampo(campoDe(controle), mensagem));
+        mostrarErrosDeCampos(erros);
         erros[0].controle.focus();
         return;
     }
@@ -97,7 +69,7 @@ formCadastro.addEventListener('submit', async (evento) => {
             return;
         }
 
-        window.location.href = 'cartas.html';
+        window.location.href = 'home.html';
     } catch (erro) {
         erroCadastro.textContent = 'Falha de conexão com o servidor.';
         erroCadastro.hidden = false;

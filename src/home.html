@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Administrativo - Início</title>
+    <link rel="stylesheet" href="assets/css/estilo.css">
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-marca marca">
+            <span class="marca-simbolo" aria-hidden="true">
+                <img src="https://www.lmcorp.com.br/arquivos/img/assets/logo_tcg_2_color.png" alt="Logo do Portal Administrativo">
+            </span>
+            <div class="cabecalho-titulo">
+                <h1>Gerenciador de Cartas</h1>
+                <p id="saudacao" class="texto-suave"></p>
+            </div>
+        </div>
+        <div class="cabecalho-usuario">
+            <button type="button" id="botao-sair" class="botao botao-fantasma">
+                <span class="icone" aria-hidden="true"><span data-icone="SAIR"></span></span>
+                <span>Sair</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="conteudo">
+        <div class="area-principal">
+            <section id="hub-jogos" class="hub-jogos" aria-label="Selecione um Card Game">
+                <div class="hub-cabecalho">
+                    <h2 class="hub-titulo">Escolha um Card Game</h2>
+                    <p class="hub-subtitulo texto-suave">Selecione um jogo para ver suas cartas ou visualize todas de uma vez.</p>
+                </div>
+
+                <div class="hub-grade">
+                    <button type="button" class="hub-card" data-jogo="magic">
+                        <span class="hub-card-capa hub-capa-magic">
+                            <img class="hub-card-imagem" src="assets/img/magic.jpg" alt="Magic: The Gathering" loading="lazy">
+                        </span>
+                        <span class="hub-card-nome">Magic: The Gathering</span>
+                        <span class="hub-card-contagem" data-contagem="magic"></span>
+                    </button>
+
+                    <button type="button" class="hub-card" data-jogo="pokemon">
+                        <span class="hub-card-capa hub-capa-pokemon">
+                            <img class="hub-card-imagem" src="assets/img/pokemon.jpg" alt="Pokémon" loading="lazy">
+                        </span>
+                        <span class="hub-card-nome">Pokémon</span>
+                        <span class="hub-card-contagem" data-contagem="pokemon"></span>
+                    </button>
+
+                    <button type="button" class="hub-card" data-jogo="yugioh">
+                        <span class="hub-card-capa hub-capa-yugioh">
+                            <img class="hub-card-imagem" src="assets/img/yugioh.jpg" alt="Yu-Gi-Oh!" loading="lazy">
+                        </span>
+                        <span class="hub-card-nome">Yu-Gi-Oh!</span>
+                        <span class="hub-card-contagem" data-contagem="yugioh"></span>
+                    </button>
+
+                    <button type="button" class="hub-card hub-card-todas" data-jogo="todas">
+                        <span class="hub-card-capa hub-capa-todas" aria-hidden="true"><span data-icone="EMBLEMA_TODAS"></span></span>
+                        <span class="hub-card-nome">Ver todas as cartas</span>
+                        <span class="hub-card-contagem" data-contagem="todas"></span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/icons/icones.js"></script>
+    <script src="assets/js/icons/montar-icones.js"></script>
+    <script src="assets/js/home.js"></script>
+</body>
+</html>
