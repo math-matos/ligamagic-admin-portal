@@ -1,3 +1,32 @@
+@font-face {
+    font-family: "Open Sauce Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/open-sauce-sans@5/files/open-sauce-sans-latin-400-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/open-sauce-sans@5/files/open-sauce-sans-latin-500-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/open-sauce-sans@5/files/open-sauce-sans-latin-600-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/open-sauce-sans@5/files/open-sauce-sans-latin-700-normal.woff2) format("woff2");
+}
+
 :root {
     --gray-50:  #f8fafc;
     --gray-100: #f1f5f9;
@@ -57,7 +86,7 @@
     --sombra-lg: 0 28px 56px -16px rgba(15, 23, 42, 0.26), 0 10px 24px -12px rgba(15, 23, 42, 0.14);
     --anel-foco: 0 0 0 3px var(--primaria-anel);
 
-    --fonte: "Segoe UI", system-ui, -apple-system, "Roboto", "Helvetica Neue", Arial, sans-serif;
+    --fonte: "Open Sauce Sans", "Segoe UI", system-ui, -apple-system, "Roboto", "Helvetica Neue", Arial, sans-serif;
     --fs-xs:   0.75rem;
     --fs-sm:   0.8125rem;
     --fs-base: 0.9375rem;
