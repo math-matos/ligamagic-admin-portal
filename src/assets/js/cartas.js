@@ -26,6 +26,7 @@ const botaoVerGrade = document.getElementById('ver-grade');
 const estadoVazio = document.getElementById('estado-vazio');
 const estadoVazioTexto = document.getElementById('estado-vazio-texto');
 const estadoVazioDica = document.querySelector('.estado-vazio-dica');
+const botaoVazioNovaCarta = document.getElementById('botao-vazio-nova-carta');
 const campoBusca = document.getElementById('campo-busca');
 
 const sidebarFiltros = document.getElementById('filtros-sidebar');
@@ -389,6 +390,7 @@ async function carregarCartas() {
         if (estadoVazioDica) {
             estadoVazioDica.textContent = 'Verifique a conexão e recarregue a página.';
         }
+        botaoVazioNovaCarta.hidden = true;
         estadoVazio.hidden = false;
     }
 }
@@ -437,6 +439,7 @@ function renderizarCartas() {
     }
 
     estadoVazio.hidden = temResultados;
+    botaoVazioNovaCarta.hidden = temResultados || temFiltroAtivo;
     painelLista.hidden = ehGrade || !temResultados;
     painelGrade.hidden = !ehGrade || !temResultados;
 

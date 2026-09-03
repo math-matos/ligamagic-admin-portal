@@ -15,10 +15,69 @@ const botaoSalvar = document.getElementById('botao-salvar');
 let edicaoPendente = null;
 let raridadePendente = null;
 
+const TIPOS_IMAGEM_ACEITOS = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANHO_MAX_IMAGEM = 5 * 1024 * 1024;
+const MAX_CARACTERES_NOME = 30;
+
+function campoDe(controle) {
+    return controle.closest('.campo');
+}
+
+function definirErroCampo(campo, mensagem) {
+    if (!campo) return;
+    campo.classList.add('invalido');
+    let erro = campo.querySelector('.campo-erro');
+    if (!erro) {
+        erro = document.createElement('p');
+        erro.className = 'campo-erro';
+        erro.setAttribute('role', 'alert');
+        campo.appendChild(erro);
+    }
+    erro.textContent = mensagem;
+}
+
+function limparErroCampo(campo) {
+    if (!campo) return;
+    campo.classList.remove('invalido');
+    const erro = campo.querySelector('.campo-erro');
+    if (erro) erro.remove();
+}
+
+function limparTodosErros() {
+    formCarta.querySelectorAll('.campo.invalido').forEach(limparErroCampo);
+    erroFormulario.hidden = true;
+}
+
+function focarControle(controle) {
+    if (controle === campoImagem) {
+        const campo = campoDe(controle);
+        if (campo) campo.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        return;
+    }
+    if (controle.tagName === 'SELECT') {
+        const gatilho = controle.parentNode.querySelector('.selecao-gatilho');
+        if (gatilho) {
+            gatilho.focus();
+            return;
+        }
+    }
+    controle.focus();
+}
+
+function validarImagem(arquivo) {
+    if (!TIPOS_IMAGEM_ACEITOS.includes(arquivo.type)) {
+        return 'Formato inválido. Envie PNG, JPG ou WEBP.';
+    }
+    if (arquivo.size > TAMANHO_MAX_IMAGEM) {
+        return 'A imagem deve ter no máximo 5 MB.';
+    }
+    return null;
+}
+
 function abrirFormulario(carta = null) {
     formCarta.reset();
     campoCartaId.value = '';
-    erroFormulario.hidden = true;
+    limparTodosErros();
     previaImagem.hidden = true;
     previaImagem.src = '';
     if (dropzoneTitulo) {
@@ -141,6 +200,10 @@ campoCardGame.addEventListener('change', () => {
     edicaoPendente = null;
     raridadePendente = null;
 
+    limparErroCampo(campoDe(campoCardGame));
+    limparErroCampo(campoDe(campoEdicao));
+    limparErroCampo(campoDe(campoRaridade));
+
     if (campoCardGame.value) {
         carregarEdicoes(campoCardGame.value);
         carregarRaridades(campoCardGame.value);
@@ -150,14 +213,32 @@ campoCardGame.addEventListener('change', () => {
     }
 });
 
+campoNomeEn.addEventListener('input', () => limparErroCampo(campoDe(campoNomeEn)));
+campoNomePt.addEventListener('input', () => limparErroCampo(campoDe(campoNomePt)));
+campoEdicao.addEventListener('change', () => limparErroCampo(campoDe(campoEdicao)));
+campoRaridade.addEventListener('change', () => limparErroCampo(campoDe(campoRaridade)));
+
 const dropzone = document.querySelector('.dropzone');
 const dropzoneTitulo = document.querySelector('.dropzone-texto strong');
 const dropzoneTituloPadrao = dropzoneTitulo ? dropzoneTitulo.textContent : '';
 
 function mostrarPreviaImagem() {
     const arquivo = campoImagem.files[0];
+    const campo = campoDe(campoImagem);
 
     if (arquivo) {
+        const mensagem = validarImagem(arquivo);
+        if (mensagem) {
+            definirErroCampo(campo, mensagem);
+            previaImagem.hidden = true;
+            previaImagem.src = '';
+            if (dropzoneTitulo) {
+                dropzoneTitulo.textContent = dropzoneTituloPadrao;
+            }
+            return;
+        }
+
+        limparErroCampo(campo);
         previaImagem.src = URL.createObjectURL(arquivo);
         previaImagem.hidden = false;
         if (dropzoneTitulo) {
@@ -171,8 +252,6 @@ function mostrarPreviaImagem() {
 campoImagem.addEventListener('change', mostrarPreviaImagem);
 
 if (dropzone) {
-    const TIPOS_ACEITOS = ['image/jpeg', 'image/png', 'image/webp'];
-
     const impedirPadrao = (evento) => {
         evento.preventDefault();
         evento.stopPropagation();
@@ -199,9 +278,9 @@ if (dropzone) {
         const arquivo = evento.dataTransfer.files[0];
         if (!arquivo) return;
 
-        if (!TIPOS_ACEITOS.includes(arquivo.type)) {
-            erroFormulario.textContent = 'Formato inválido. Envie PNG, JPG, WEBP.';
-            erroFormulario.hidden = false;
+        const mensagem = validarImagem(arquivo);
+        if (mensagem) {
+            definirErroCampo(campoDe(campoImagem), mensagem);
             return;
         }
 
@@ -209,39 +288,53 @@ if (dropzone) {
         transferencia.items.add(arquivo);
         campoImagem.files = transferencia.files;
 
-        erroFormulario.hidden = true;
         mostrarPreviaImagem();
     });
 }
 
 function validarFormulario() {
+    const erros = [];
+
     if (!campoNomeEn.value.trim()) {
-        return 'Informe o nome da carta em inglês.';
+        erros.push({ controle: campoNomeEn, mensagem: 'Informe o nome da carta em inglês.' });
+    } else if (campoNomeEn.value.trim().length > MAX_CARACTERES_NOME) {
+        erros.push({ controle: campoNomeEn, mensagem: `O nome deve ter no máximo ${MAX_CARACTERES_NOME} caracteres.` });
+    }
+    if (campoNomePt.value.trim().length > MAX_CARACTERES_NOME) {
+        erros.push({ controle: campoNomePt, mensagem: `O nome deve ter no máximo ${MAX_CARACTERES_NOME} caracteres.` });
     }
     if (!campoCardGame.value) {
-        return 'Selecione o card game.';
+        erros.push({ controle: campoCardGame, mensagem: 'Selecione o card game.' });
     }
     if (!campoEdicao.value) {
-        return 'Selecione a edição da carta.';
+        erros.push({ controle: campoEdicao, mensagem: 'Selecione a edição da carta.' });
     }
     if (!campoRaridade.value) {
-        return 'Selecione a raridade da carta.';
+        erros.push({ controle: campoRaridade, mensagem: 'Selecione a raridade da carta.' });
     }
-    if (!campoCartaId.value && !campoImagem.files[0]) {
-        return 'Selecione a imagem da carta.';
+
+    const arquivo = campoImagem.files[0];
+    if (arquivo) {
+        const mensagem = validarImagem(arquivo);
+        if (mensagem) {
+            erros.push({ controle: campoImagem, mensagem });
+        }
+    } else if (!campoCartaId.value) {
+        erros.push({ controle: campoImagem, mensagem: 'Selecione a imagem da carta.' });
     }
-    return null;
+
+    return erros;
 }
 
 formCarta.addEventListener('submit', async (evento) => {
     evento.preventDefault();
-    erroFormulario.hidden = true;
+    limparTodosErros();
 
-    const mensagemValidacao = validarFormulario();
+    const erros = validarFormulario();
 
-    if (mensagemValidacao) {
-        erroFormulario.textContent = mensagemValidacao;
-        erroFormulario.hidden = false;
+    if (erros.length) {
+        erros.forEach(({ controle, mensagem }) => definirErroCampo(campoDe(controle), mensagem));
+        focarControle(erros[0].controle);
         return;
     }
 
@@ -286,6 +379,7 @@ formCarta.addEventListener('submit', async (evento) => {
 });
 
 document.getElementById('botao-nova-carta').addEventListener('click', () => abrirFormulario());
+document.getElementById('botao-vazio-nova-carta').addEventListener('click', () => abrirFormulario());
 document.getElementById('botao-cancelar').addEventListener('click', fecharFormulario);
 
 modalFormulario.addEventListener('click', (evento) => {
