@@ -470,10 +470,14 @@ a { color: var(--primaria); }
     color: var(--texto-forte);
 }
 
-.botao-excluir:hover:not(:disabled) {
+.botao-excluir {
     background-color: var(--perigo-bg);
     border-color: transparent;
     color: var(--perigo-tx);
+}
+.botao-excluir:hover:not(:disabled) {
+    background-color: var(--perigo);
+    color: #ffffff;
 }
 
 .botao-largo { width: 100%; }
@@ -1060,6 +1064,126 @@ a { color: var(--primaria); }
 @keyframes modal-entrada {
     from { opacity: 0; transform: translateY(12px) scale(0.98); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.botao-fechar-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border: none;
+    border-radius: var(--r-full);
+    background-color: var(--surface-2);
+    color: var(--texto-suave);
+    cursor: pointer;
+    transition: background-color var(--t), color var(--t);
+    z-index: 1;
+}
+.botao-fechar-modal:hover {
+    background-color: var(--gray-100);
+    color: var(--texto-forte);
+}
+
+/* Imagens ampliáveis (miniatura da lista, capa do card) */
+.ampliavel {
+    cursor: zoom-in;
+    transition: filter var(--t);
+}
+.ampliavel:hover {
+    filter: brightness(0.92);
+}
+
+/* Visualizador de imagem (zoom / pan) */
+.modal-imagem {
+    background-color: rgba(10, 12, 20, 0.92);
+    backdrop-filter: blur(2px);
+    padding: 0;
+}
+
+.modal-imagem .botao-fechar-modal {
+    position: fixed;
+    top: 1.25rem;
+    right: 1.25rem;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+.modal-imagem .botao-fechar-modal:hover {
+    background-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+}
+
+.visualizador-imagem-area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+    cursor: default;
+}
+.visualizador-imagem-area.zoom-ativo {
+    cursor: grab;
+}
+.visualizador-imagem-area.arrastando {
+    cursor: grabbing;
+}
+
+.visualizador-imagem-area img {
+    max-width: 90vw;
+    max-height: 85vh;
+    user-select: none;
+    -webkit-user-drag: none;
+    will-change: transform;
+    box-shadow: var(--sombra-lg);
+    border-radius: var(--r-sm);
+}
+
+.visualizador-imagem-barra {
+    position: fixed;
+    bottom: 1.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.4rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--r-full);
+    backdrop-filter: blur(8px);
+}
+
+.visualizador-imagem-barra button {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border: none;
+    border-radius: var(--r-full);
+    background-color: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color var(--t);
+}
+.visualizador-imagem-barra button:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+.visualizador-imagem-barra button svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+#zoom-percentual {
+    min-width: 3.4rem;
+    text-align: center;
+    color: #ffffff;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Área de upload de imagem */

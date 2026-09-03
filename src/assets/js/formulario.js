@@ -50,10 +50,12 @@ function abrirFormulario(carta = null) {
 
     modalFormulario.hidden = false;
     campoNomeEn.focus();
+    empilharModal(fecharFormulario);
 }
 
 function fecharFormulario() {
     modalFormulario.hidden = true;
+    desempilharModal(fecharFormulario);
 }
 
 function resetarEdicoes() {
@@ -244,12 +246,6 @@ document.getElementById('botao-cancelar').addEventListener('click', fecharFormul
 
 modalFormulario.addEventListener('click', (evento) => {
     if (evento.target === modalFormulario) {
-        fecharFormulario();
-    }
-});
-
-document.addEventListener('keydown', (evento) => {
-    if (evento.key === 'Escape' && !modalFormulario.hidden) {
         fecharFormulario();
     }
 });

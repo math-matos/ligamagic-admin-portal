@@ -44,6 +44,25 @@ const campoBusca = document.getElementById('campo-busca');
 const CHAVE_VISUALIZACAO = 'cartas-visualizacao';
 let modoVisualizacao = localStorage.getItem(CHAVE_VISUALIZACAO) === 'lista' ? 'lista' : 'grade';
 
+const pilhaModais = [];
+
+function empilharModal(fecharFn) {
+    pilhaModais.push(fecharFn);
+}
+
+function desempilharModal(fecharFn) {
+    const indice = pilhaModais.lastIndexOf(fecharFn);
+    if (indice !== -1) {
+        pilhaModais.splice(indice, 1);
+    }
+}
+
+document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && pilhaModais.length > 0) {
+        pilhaModais[pilhaModais.length - 1]();
+    }
+});
+
 async function verificarSessao() {
     try {
         const resposta = await fetch('api/sessao.php');
@@ -196,8 +215,10 @@ function criarLinhaCarta(carta) {
         const imagem = document.createElement('img');
         imagem.src = carta.imagem;
         imagem.alt = carta.nome_en;
-        imagem.className = 'miniatura';
+        imagem.className = 'miniatura ampliavel';
         imagem.loading = 'lazy';
+        imagem.title = 'Clique para ampliar';
+        imagem.addEventListener('click', () => abrirVisualizadorImagem(carta.imagem, carta.nome_en));
         celulaImagem.appendChild(imagem);
     } else {
         const vazia = document.createElement('span');
@@ -262,6 +283,9 @@ function criarCardCarta(carta) {
         imagem.alt = carta.nome_en;
         imagem.loading = 'lazy';
         areaImagem.appendChild(imagem);
+        areaImagem.classList.add('ampliavel');
+        areaImagem.title = 'Clique para ampliar';
+        areaImagem.addEventListener('click', () => abrirVisualizadorImagem(carta.imagem, carta.nome_en));
     } else {
         const vazia = document.createElement('span');
         vazia.className = 'carta-sem-imagem';
@@ -355,11 +379,13 @@ function confirmarExclusao(carta) {
     cartaParaExcluir = carta;
     textoExclusao.textContent = `Tem certeza que deseja excluir a carta "${carta.nome_en}"?`;
     modalExclusao.hidden = false;
+    empilharModal(fecharModalExclusao);
 }
 
 function fecharModalExclusao() {
     modalExclusao.hidden = true;
     cartaParaExcluir = null;
+    desempilharModal(fecharModalExclusao);
 }
 
 botaoConfirmarExclusao.addEventListener('click', async () => {
@@ -394,12 +420,6 @@ document.getElementById('botao-cancelar-exclusao').addEventListener('click', fec
 
 modalExclusao.addEventListener('click', (evento) => {
     if (evento.target === modalExclusao) {
-        fecharModalExclusao();
-    }
-});
-
-document.addEventListener('keydown', (evento) => {
-    if (evento.key === 'Escape' && !modalExclusao.hidden) {
         fecharModalExclusao();
     }
 });
