@@ -94,13 +94,22 @@ function filtrarOpcoesJogo() {
     vazioFiltroJogo.hidden = visiveis > 0;
 }
 
+function raridadeCorrespondeJogo(opcao) {
+    if (!filtros.jogos.size) {
+        return true;
+    }
+    const jogos = (opcao.dataset.jogos || '').split(' ').filter(Boolean);
+    return jogos.some((jogo) => filtros.jogos.has(jogo));
+}
+
 function filtrarOpcoesRaridade() {
     const termo = buscaOpcoes.raridade;
     let visiveis = 0;
 
     listaFiltroRaridade.querySelectorAll('.filtro-opcao').forEach((opcao) => {
         const texto = normalizarTexto(opcao.querySelector('.filtro-texto').textContent);
-        const corresponde = !termo || texto.includes(termo);
+        const correspondeTexto = !termo || texto.includes(termo);
+        const corresponde = correspondeTexto && raridadeCorrespondeJogo(opcao);
         opcao.hidden = !corresponde;
         if (corresponde) {
             visiveis++;
@@ -108,6 +117,20 @@ function filtrarOpcoesRaridade() {
     });
 
     vazioFiltroRaridade.hidden = visiveis > 0;
+}
+
+function sincronizarRaridadesComJogo() {
+    listaFiltroRaridade.querySelectorAll('.filtro-opcao').forEach((opcao) => {
+        if (raridadeCorrespondeJogo(opcao)) {
+            return;
+        }
+        const checkbox = opcao.querySelector('.filtro-checkbox');
+        if (checkbox && checkbox.checked) {
+            checkbox.checked = false;
+            filtros.raridades.delete(checkbox.value);
+        }
+    });
+    filtrarOpcoesRaridade();
 }
 
 buscaFiltroJogo.addEventListener('input', () => {
@@ -221,6 +244,7 @@ sidebarFiltros.addEventListener('change', (evento) => {
 
     if (alvo.dataset.grupo === 'jogo') {
         renderizarListaEdicao();
+        sincronizarRaridadesComJogo();
     }
 
     atualizarEstadoFiltros();
@@ -235,6 +259,7 @@ botaoLimparFiltros.addEventListener('click', () => {
         checkbox.checked = false;
     });
     renderizarListaEdicao();
+    filtrarOpcoesRaridade();
     atualizarEstadoFiltros();
     renderizarCartas();
 });
