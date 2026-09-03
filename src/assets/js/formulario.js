@@ -33,6 +33,10 @@ function abrirFormulario(carta = null) {
         campoCardGame.value = carta.card_game;
         campoRaridade.value = carta.raridade;
 
+        if (typeof sincronizarSelecoes === 'function') {
+            sincronizarSelecoes();
+        }
+
         if (carta.imagem) {
             previaImagem.src = carta.imagem;
             previaImagem.hidden = false;
@@ -100,10 +104,11 @@ campoCardGame.addEventListener('change', () => {
     }
 });
 
+const dropzone = document.querySelector('.dropzone');
 const dropzoneTitulo = document.querySelector('.dropzone-texto strong');
 const dropzoneTituloPadrao = dropzoneTitulo ? dropzoneTitulo.textContent : '';
 
-campoImagem.addEventListener('change', () => {
+function mostrarPreviaImagem() {
     const arquivo = campoImagem.files[0];
 
     if (arquivo) {
@@ -115,7 +120,53 @@ campoImagem.addEventListener('change', () => {
     } else if (dropzoneTitulo) {
         dropzoneTitulo.textContent = dropzoneTituloPadrao;
     }
-});
+}
+
+campoImagem.addEventListener('change', mostrarPreviaImagem);
+
+if (dropzone) {
+    const TIPOS_ACEITOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+    const impedirPadrao = (evento) => {
+        evento.preventDefault();
+        evento.stopPropagation();
+    };
+
+    ['dragenter', 'dragover'].forEach((tipo) => {
+        dropzone.addEventListener(tipo, (evento) => {
+            impedirPadrao(evento);
+            dropzone.classList.add('arrastando');
+        });
+    });
+
+    ['dragleave', 'dragend'].forEach((tipo) => {
+        dropzone.addEventListener(tipo, (evento) => {
+            impedirPadrao(evento);
+            dropzone.classList.remove('arrastando');
+        });
+    });
+
+    dropzone.addEventListener('drop', (evento) => {
+        impedirPadrao(evento);
+        dropzone.classList.remove('arrastando');
+
+        const arquivo = evento.dataTransfer.files[0];
+        if (!arquivo) return;
+
+        if (!TIPOS_ACEITOS.includes(arquivo.type)) {
+            erroFormulario.textContent = 'Formato inválido. Envie PNG, JPG, WEBP ou GIF.';
+            erroFormulario.hidden = false;
+            return;
+        }
+
+        const transferencia = new DataTransfer();
+        transferencia.items.add(arquivo);
+        campoImagem.files = transferencia.files;
+
+        erroFormulario.hidden = true;
+        mostrarPreviaImagem();
+    });
+}
 
 function validarFormulario() {
     if (!campoNomeEn.value.trim()) {
