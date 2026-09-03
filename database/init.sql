@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS cartas (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO usuarios (usuario, senha, nome) VALUES
-('admin', '$2y$10$4YH5is77VP7iYP7SLLj8NeSR44Vg94TpvOl3EL1iD5.Td8wcBWHky', 'Administrador');
+('admin', '$2y$10$4YH5is77VP7iYP7SLLj8NeSR44Vg94TpvOl3EL1iD5.Td8wcBWHky', 'Mr. Liga');
 
 INSERT INTO cartas (nome_en, nome_pt, card_game, edicao_id, edicao_nome, raridade) VALUES
 ('Teferi, Hero of Dominaria', 'Teferi, Herói de Dominária', 'magic', 'dom', 'Dominaria', 'Mítica'),
