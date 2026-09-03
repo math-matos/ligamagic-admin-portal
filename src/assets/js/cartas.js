@@ -4,11 +4,37 @@ const nomesJogos = {
     yugioh: 'Yu-Gi-Oh!'
 };
 
+const ICONE_IMAGEM_VAZIA =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<rect x="3" y="3" width="18" height="18" rx="2"></rect>' +
+    '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
+    '<polyline points="21 15 16 10 5 21"></polyline></svg>';
+
+const ICONE_EDITAR =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M12 20h9"></path>' +
+    '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>';
+
+const ICONE_EXCLUIR =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    '<polyline points="3 6 5 6 21 6"></polyline>' +
+    '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+
+function classeRaridade(raridade) {
+    const base = (raridade || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/\s+/g, '-');
+    return 'badge-' + base;
+}
+
 let cartas = [];
 
 const listaCartas = document.getElementById('lista-cartas');
 const estadoVazio = document.getElementById('estado-vazio');
-const estadoCarregando = document.getElementById('estado-carregando');
+const estadoVazioTexto = document.getElementById('estado-vazio-texto');
+const estadoVazioDica = document.querySelector('.estado-vazio-dica');
 const campoBusca = document.getElementById('campo-busca');
 
 async function verificarSessao() {
@@ -25,9 +51,26 @@ async function verificarSessao() {
     }
 }
 
-async function carregarCartas() {
-    estadoCarregando.hidden = false;
+function mostrarSkeleton(linhas = 5) {
     estadoVazio.hidden = true;
+    listaCartas.innerHTML = '';
+
+    for (let i = 0; i < linhas; i++) {
+        const linha = document.createElement('tr');
+        linha.innerHTML =
+            '<td><span class="skeleton skeleton-miniatura"></span></td>' +
+            '<td><span class="skeleton skeleton-linha" style="width:70%"></span></td>' +
+            '<td><span class="skeleton skeleton-linha" style="width:55%"></span></td>' +
+            '<td><span class="skeleton skeleton-chip"></span></td>' +
+            '<td><span class="skeleton skeleton-linha" style="width:60%"></span></td>' +
+            '<td><span class="skeleton skeleton-chip" style="width:4.5rem"></span></td>' +
+            '<td></td>';
+        listaCartas.appendChild(linha);
+    }
+}
+
+async function carregarCartas() {
+    mostrarSkeleton();
 
     try {
         const resposta = await fetch('api/cartas.php');
@@ -41,10 +84,12 @@ async function carregarCartas() {
         cartas = dados.cartas || [];
         renderizarCartas();
     } catch (erro) {
-        estadoVazio.textContent = 'Erro ao carregar as cartas. Recarregue a página.';
+        listaCartas.innerHTML = '';
+        estadoVazioTexto.textContent = 'Erro ao carregar as cartas.';
+        if (estadoVazioDica) {
+            estadoVazioDica.textContent = 'Verifique a conexão e recarregue a página.';
+        }
         estadoVazio.hidden = false;
-    } finally {
-        estadoCarregando.hidden = true;
     }
 }
 
@@ -71,7 +116,14 @@ function renderizarCartas() {
     const visiveis = filtrarCartas();
 
     listaCartas.innerHTML = '';
-    estadoVazio.textContent = 'Nenhuma carta encontrada.';
+    estadoVazioTexto.textContent = campoBusca.value.trim()
+        ? 'Nenhuma carta encontrada.'
+        : 'Nenhuma carta cadastrada ainda.';
+    if (estadoVazioDica) {
+        estadoVazioDica.textContent = campoBusca.value.trim()
+            ? 'Tente outro termo ou cadastre uma nova carta.'
+            : 'Clique em “Nova Carta” para começar.';
+    }
     estadoVazio.hidden = visiveis.length > 0;
 
     visiveis.forEach((carta) => {
@@ -83,25 +135,40 @@ function renderizarCartas() {
             imagem.src = carta.imagem;
             imagem.alt = carta.nome_en;
             imagem.className = 'miniatura';
+            imagem.loading = 'lazy';
             celulaImagem.appendChild(imagem);
         } else {
-            celulaImagem.textContent = '—';
+            const vazia = document.createElement('span');
+            vazia.className = 'miniatura-vazia';
+            vazia.setAttribute('aria-hidden', 'true');
+            vazia.innerHTML = ICONE_IMAGEM_VAZIA;
+            celulaImagem.appendChild(vazia);
         }
 
         const celulaNomeEn = document.createElement('td');
+        celulaNomeEn.className = 'celula-nome';
         celulaNomeEn.textContent = carta.nome_en;
 
         const celulaNomePt = document.createElement('td');
         celulaNomePt.textContent = carta.nome_pt || '—';
+        if (!carta.nome_pt) {
+            celulaNomePt.style.color = 'var(--texto-suave)';
+        }
 
         const celulaJogo = document.createElement('td');
-        celulaJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
+        const chipJogo = document.createElement('span');
+        chipJogo.className = 'chip chip-jogo-' + carta.card_game;
+        chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
+        celulaJogo.appendChild(chipJogo);
 
         const celulaEdicao = document.createElement('td');
         celulaEdicao.textContent = carta.edicao_nome;
 
         const celulaRaridade = document.createElement('td');
-        celulaRaridade.textContent = carta.raridade;
+        const badge = document.createElement('span');
+        badge.className = 'badge ' + classeRaridade(carta.raridade);
+        badge.textContent = carta.raridade;
+        celulaRaridade.appendChild(badge);
 
         const celulaAcoes = document.createElement('td');
         celulaAcoes.className = 'celula-acoes';
@@ -109,13 +176,15 @@ function renderizarCartas() {
         const botaoEditar = document.createElement('button');
         botaoEditar.type = 'button';
         botaoEditar.className = 'botao botao-neutro botao-pequeno';
-        botaoEditar.textContent = 'Editar';
+        botaoEditar.innerHTML = ICONE_EDITAR + '<span>Editar</span>';
+        botaoEditar.setAttribute('aria-label', `Editar ${carta.nome_en}`);
         botaoEditar.addEventListener('click', () => abrirFormulario(carta));
 
         const botaoExcluir = document.createElement('button');
         botaoExcluir.type = 'button';
-        botaoExcluir.className = 'botao botao-perigo botao-pequeno';
-        botaoExcluir.textContent = 'Excluir';
+        botaoExcluir.className = 'botao botao-neutro botao-pequeno botao-excluir';
+        botaoExcluir.innerHTML = ICONE_EXCLUIR + '<span>Excluir</span>';
+        botaoExcluir.setAttribute('aria-label', `Excluir ${carta.nome_en}`);
         botaoExcluir.addEventListener('click', () => confirmarExclusao(carta));
 
         celulaAcoes.append(botaoEditar, botaoExcluir);
@@ -198,6 +267,12 @@ document.getElementById('botao-cancelar-exclusao').addEventListener('click', fec
 
 modalExclusao.addEventListener('click', (evento) => {
     if (evento.target === modalExclusao) {
+        fecharModalExclusao();
+    }
+});
+
+document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && !modalExclusao.hidden) {
         fecharModalExclusao();
     }
 });

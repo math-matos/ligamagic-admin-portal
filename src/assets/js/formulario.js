@@ -20,6 +20,9 @@ function abrirFormulario(carta = null) {
     erroFormulario.hidden = true;
     previaImagem.hidden = true;
     previaImagem.src = '';
+    if (dropzoneTitulo) {
+        dropzoneTitulo.textContent = dropzoneTituloPadrao;
+    }
     resetarEdicoes();
 
     if (carta) {
@@ -97,12 +100,20 @@ campoCardGame.addEventListener('change', () => {
     }
 });
 
+const dropzoneTitulo = document.querySelector('.dropzone-texto strong');
+const dropzoneTituloPadrao = dropzoneTitulo ? dropzoneTitulo.textContent : '';
+
 campoImagem.addEventListener('change', () => {
     const arquivo = campoImagem.files[0];
 
     if (arquivo) {
         previaImagem.src = URL.createObjectURL(arquivo);
         previaImagem.hidden = false;
+        if (dropzoneTitulo) {
+            dropzoneTitulo.textContent = arquivo.name;
+        }
+    } else if (dropzoneTitulo) {
+        dropzoneTitulo.textContent = dropzoneTituloPadrao;
     }
 });
 
@@ -182,6 +193,12 @@ document.getElementById('botao-cancelar').addEventListener('click', fecharFormul
 
 modalFormulario.addEventListener('click', (evento) => {
     if (evento.target === modalFormulario) {
+        fecharFormulario();
+    }
+});
+
+document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && !modalFormulario.hidden) {
         fecharFormulario();
     }
 });
