@@ -26,6 +26,12 @@ docker-compose up -d
 
 ============================================================================
 
+## Decisões de UX/Produto
+
+- PREENCHER AQUI
+
+============================================================================
+
 # TODO
 - [ ] Separar depois o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
 
