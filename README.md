@@ -24,7 +24,7 @@ docker-compose up -d
 - Usuário: admin
 - Senha: admin123 
 
-================================================================================
+============================================================================
 
 # TODO
 - [ ] Separar depois o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
