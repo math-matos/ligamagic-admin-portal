@@ -42,18 +42,40 @@
                 </span>
                 <input type="search" id="campo-busca" placeholder="Buscar por nome, jogo, edição ou raridade...">
             </span>
-            <button type="button" id="botao-nova-carta" class="botao botao-primario">
-                <span class="icone" aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                </span>
-                Nova Carta
-            </button>
+            <div class="barra-acoes-fim">
+                <div class="alternar-visualizacao" role="group" aria-label="Modo de visualização">
+                    <button type="button" id="ver-grade" class="botao-visualizacao" aria-pressed="true" aria-label="Visualizar em grade" title="Grade">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button type="button" id="ver-lista" class="botao-visualizacao" aria-pressed="false" aria-label="Visualizar em lista" title="Lista">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <button type="button" id="botao-nova-carta" class="botao botao-primario">
+                    <span class="icone" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </span>
+                    Nova Carta
+                </button>
+            </div>
         </div>
 
-        <div class="tabela-container">
+        <div class="tabela-container" id="painel-lista">
             <div class="tabela-scroll">
                 <table class="tabela-cartas">
                     <thead>
@@ -70,16 +92,19 @@
                     <tbody id="lista-cartas"></tbody>
                 </table>
             </div>
-            <div id="estado-vazio" class="estado-vazio" hidden>
-                <span class="estado-vazio-icone" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </span>
-                <span id="estado-vazio-texto">Nenhuma carta encontrada.</span>
-                <span class="estado-vazio-dica">Tente outro termo ou cadastre uma nova carta.</span>
-            </div>
+        </div>
+
+        <div id="painel-grade" class="grade-cartas" hidden></div>
+
+        <div id="estado-vazio" class="estado-vazio" hidden>
+            <span class="estado-vazio-icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <span id="estado-vazio-texto">Nenhuma carta encontrada.</span>
+            <span class="estado-vazio-dica">Tente outro termo ou cadastre uma nova carta.</span>
         </div>
     </main>
 

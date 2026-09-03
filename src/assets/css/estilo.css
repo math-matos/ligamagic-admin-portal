@@ -698,6 +698,143 @@ a { color: var(--primaria); }
 }
 .barra-acoes input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
 
+.barra-acoes-fim {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.alternar-visualizacao {
+    display: inline-flex;
+    gap: 0.15rem;
+    padding: 0.2rem;
+    background-color: var(--surface-2);
+    border: 1px solid var(--border-forte);
+    border-radius: var(--r);
+    flex-shrink: 0;
+}
+
+.botao-visualizacao {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border: none;
+    border-radius: var(--r-sm);
+    background-color: transparent;
+    color: var(--texto-suave);
+    cursor: pointer;
+    transition: background-color var(--t), color var(--t), box-shadow var(--t);
+}
+.botao-visualizacao:hover { color: var(--texto-forte); }
+.botao-visualizacao[aria-pressed="true"] {
+    background-color: var(--surface);
+    color: var(--primaria);
+    box-shadow: var(--sombra-sm);
+}
+.botao-visualizacao svg { width: 1.15rem; height: 1.15rem; }
+
+.grade-cartas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+    gap: 1.1rem;
+}
+.grade-cartas[hidden] { display: none; }
+
+.carta-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sombra-sm);
+    overflow: hidden;
+    transition: box-shadow var(--t), transform var(--t-rapido), border-color var(--t);
+}
+.carta-card:hover {
+    box-shadow: var(--sombra-md);
+    border-color: var(--border-forte);
+    transform: translateY(-2px);
+}
+
+.carta-card-imagem {
+    position: relative;
+    aspect-ratio: 5 / 7;
+    background-color: var(--surface-2);
+    overflow: hidden;
+}
+.carta-card-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.carta-card-imagem .carta-sem-imagem {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: var(--gray-400);
+    border-bottom: 1px dashed var(--border);
+}
+.carta-card-imagem .carta-sem-imagem svg { width: 2.25rem; height: 2.25rem; }
+.carta-card-imagem .chip {
+    position: absolute;
+    top: 0.55rem;
+    left: 0.55rem;
+    box-shadow: var(--sombra-sm);
+}
+
+.carta-card-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.85rem 0.9rem 0.9rem;
+    flex: 1;
+}
+
+.carta-card-nome {
+    font-weight: 600;
+    color: var(--texto-forte);
+    line-height: 1.3;
+}
+
+.carta-card-nome-pt {
+    font-size: var(--fs-sm);
+    color: var(--texto-suave);
+    line-height: 1.3;
+}
+
+.carta-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+}
+.carta-card-edicao {
+    font-size: var(--fs-sm);
+    color: var(--texto-suave);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.carta-card-acoes {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.85rem;
+}
+.carta-card-acoes .botao { flex: 1; }
+
+.carta-card-imagem-skeleton {
+    aspect-ratio: 5 / 7;
+    width: 100%;
+    border-radius: 0;
+}
+
 /* Tabela */
 .tabela-container {
     background-color: var(--surface);
@@ -838,7 +975,6 @@ a { color: var(--primaria); }
     100% { background-position: -200% 0; }
 }
 
-/* Estado vazio */
 .estado-vazio {
     display: flex;
     flex-direction: column;
@@ -847,6 +983,10 @@ a { color: var(--primaria); }
     padding: 3.5rem 2rem;
     text-align: center;
     color: var(--texto-suave);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sombra-sm);
 }
 .estado-vazio[hidden] { display: none; }
 
@@ -1027,7 +1167,7 @@ a { color: var(--primaria); }
     .cabecalho-usuario .botao-fantasma span { display: none; }
     .barra-acoes { flex-direction: column; align-items: stretch; }
     .barra-acoes .campo-icone { max-width: none; }
-    .barra-acoes .botao-primario { width: 100%; }
+    .barra-acoes .botao-primario { flex: 1; }
     .modal-caixa { padding: 1.35rem; }
 }
 

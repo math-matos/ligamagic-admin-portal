@@ -32,10 +32,17 @@ function classeRaridade(raridade) {
 let cartas = [];
 
 const listaCartas = document.getElementById('lista-cartas');
+const painelLista = document.getElementById('painel-lista');
+const painelGrade = document.getElementById('painel-grade');
+const botaoVerLista = document.getElementById('ver-lista');
+const botaoVerGrade = document.getElementById('ver-grade');
 const estadoVazio = document.getElementById('estado-vazio');
 const estadoVazioTexto = document.getElementById('estado-vazio-texto');
 const estadoVazioDica = document.querySelector('.estado-vazio-dica');
 const campoBusca = document.getElementById('campo-busca');
+
+const CHAVE_VISUALIZACAO = 'cartas-visualizacao';
+let modoVisualizacao = localStorage.getItem(CHAVE_VISUALIZACAO) === 'lista' ? 'lista' : 'grade';
 
 async function verificarSessao() {
     try {
@@ -51,11 +58,32 @@ async function verificarSessao() {
     }
 }
 
-function mostrarSkeleton(linhas = 5) {
+function mostrarSkeleton(quantidade = 8) {
     estadoVazio.hidden = true;
-    listaCartas.innerHTML = '';
 
-    for (let i = 0; i < linhas; i++) {
+    const ehGrade = modoVisualizacao === 'grade';
+    painelLista.hidden = ehGrade;
+    painelGrade.hidden = !ehGrade;
+
+    if (ehGrade) {
+        painelGrade.innerHTML = '';
+        for (let i = 0; i < quantidade; i++) {
+            const card = document.createElement('div');
+            card.className = 'carta-card';
+            card.innerHTML =
+                '<span class="skeleton carta-card-imagem-skeleton"></span>' +
+                '<div class="carta-card-corpo">' +
+                '<span class="skeleton skeleton-linha" style="width:80%"></span>' +
+                '<span class="skeleton skeleton-linha" style="width:55%"></span>' +
+                '<span class="skeleton skeleton-chip" style="margin-top:0.3rem"></span>' +
+                '</div>';
+            painelGrade.appendChild(card);
+        }
+        return;
+    }
+
+    listaCartas.innerHTML = '';
+    for (let i = 0; i < 5; i++) {
         const linha = document.createElement('tr');
         linha.innerHTML =
             '<td><span class="skeleton skeleton-miniatura"></span></td>' +
@@ -85,6 +113,9 @@ async function carregarCartas() {
         renderizarCartas();
     } catch (erro) {
         listaCartas.innerHTML = '';
+        painelGrade.innerHTML = '';
+        painelLista.hidden = true;
+        painelGrade.hidden = true;
         estadoVazioTexto.textContent = 'Erro ao carregar as cartas.';
         if (estadoVazioDica) {
             estadoVazioDica.textContent = 'Verifique a conexão e recarregue a página.';
@@ -114,8 +145,9 @@ function filtrarCartas() {
 
 function renderizarCartas() {
     const visiveis = filtrarCartas();
+    const ehGrade = modoVisualizacao === 'grade';
+    const temResultados = visiveis.length > 0;
 
-    listaCartas.innerHTML = '';
     estadoVazioTexto.textContent = campoBusca.value.trim()
         ? 'Nenhuma carta encontrada.'
         : 'Nenhuma carta cadastrada ainda.';
@@ -124,84 +156,179 @@ function renderizarCartas() {
             ? 'Tente outro termo ou cadastre uma nova carta.'
             : 'Clique em “Nova Carta” para começar.';
     }
-    estadoVazio.hidden = visiveis.length > 0;
 
-    visiveis.forEach((carta) => {
-        const linha = document.createElement('tr');
+    estadoVazio.hidden = temResultados;
+    painelLista.hidden = ehGrade || !temResultados;
+    painelGrade.hidden = !ehGrade || !temResultados;
 
-        const celulaImagem = document.createElement('td');
-        if (carta.imagem) {
-            const imagem = document.createElement('img');
-            imagem.src = carta.imagem;
-            imagem.alt = carta.nome_en;
-            imagem.className = 'miniatura';
-            imagem.loading = 'lazy';
-            celulaImagem.appendChild(imagem);
-        } else {
-            const vazia = document.createElement('span');
-            vazia.className = 'miniatura-vazia';
-            vazia.setAttribute('aria-hidden', 'true');
-            vazia.innerHTML = ICONE_IMAGEM_VAZIA;
-            celulaImagem.appendChild(vazia);
-        }
-
-        const celulaNomeEn = document.createElement('td');
-        celulaNomeEn.className = 'celula-nome';
-        celulaNomeEn.textContent = carta.nome_en;
-
-        const celulaNomePt = document.createElement('td');
-        celulaNomePt.textContent = carta.nome_pt || '—';
-        if (!carta.nome_pt) {
-            celulaNomePt.style.color = 'var(--texto-suave)';
-        }
-
-        const celulaJogo = document.createElement('td');
-        const chipJogo = document.createElement('span');
-        chipJogo.className = 'chip chip-jogo-' + carta.card_game;
-        chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
-        celulaJogo.appendChild(chipJogo);
-
-        const celulaEdicao = document.createElement('td');
-        celulaEdicao.textContent = carta.edicao_nome;
-
-        const celulaRaridade = document.createElement('td');
-        const badge = document.createElement('span');
-        badge.className = 'badge ' + classeRaridade(carta.raridade);
-        badge.textContent = carta.raridade;
-        celulaRaridade.appendChild(badge);
-
-        const celulaAcoes = document.createElement('td');
-        celulaAcoes.className = 'celula-acoes';
-
-        const botaoEditar = document.createElement('button');
-        botaoEditar.type = 'button';
-        botaoEditar.className = 'botao botao-neutro botao-pequeno';
-        botaoEditar.innerHTML = ICONE_EDITAR + '<span>Editar</span>';
-        botaoEditar.setAttribute('aria-label', `Editar ${carta.nome_en}`);
-        botaoEditar.addEventListener('click', () => abrirFormulario(carta));
-
-        const botaoExcluir = document.createElement('button');
-        botaoExcluir.type = 'button';
-        botaoExcluir.className = 'botao botao-neutro botao-pequeno botao-excluir';
-        botaoExcluir.innerHTML = ICONE_EXCLUIR + '<span>Excluir</span>';
-        botaoExcluir.setAttribute('aria-label', `Excluir ${carta.nome_en}`);
-        botaoExcluir.addEventListener('click', () => confirmarExclusao(carta));
-
-        celulaAcoes.append(botaoEditar, botaoExcluir);
-
-        linha.append(
-            celulaImagem,
-            celulaNomeEn,
-            celulaNomePt,
-            celulaJogo,
-            celulaEdicao,
-            celulaRaridade,
-            celulaAcoes
-        );
-
-        listaCartas.appendChild(linha);
-    });
+    if (ehGrade) {
+        painelGrade.innerHTML = '';
+        visiveis.forEach((carta) => painelGrade.appendChild(criarCardCarta(carta)));
+    } else {
+        listaCartas.innerHTML = '';
+        visiveis.forEach((carta) => listaCartas.appendChild(criarLinhaCarta(carta)));
+    }
 }
+
+function criarBotoesAcao(carta) {
+    const botaoEditar = document.createElement('button');
+    botaoEditar.type = 'button';
+    botaoEditar.className = 'botao botao-neutro botao-pequeno';
+    botaoEditar.innerHTML = ICONE_EDITAR + '<span>Editar</span>';
+    botaoEditar.setAttribute('aria-label', `Editar ${carta.nome_en}`);
+    botaoEditar.addEventListener('click', () => abrirFormulario(carta));
+
+    const botaoExcluir = document.createElement('button');
+    botaoExcluir.type = 'button';
+    botaoExcluir.className = 'botao botao-neutro botao-pequeno botao-excluir';
+    botaoExcluir.innerHTML = ICONE_EXCLUIR + '<span>Excluir</span>';
+    botaoExcluir.setAttribute('aria-label', `Excluir ${carta.nome_en}`);
+    botaoExcluir.addEventListener('click', () => confirmarExclusao(carta));
+
+    return { botaoEditar, botaoExcluir };
+}
+
+function criarLinhaCarta(carta) {
+    const linha = document.createElement('tr');
+
+    const celulaImagem = document.createElement('td');
+    if (carta.imagem) {
+        const imagem = document.createElement('img');
+        imagem.src = carta.imagem;
+        imagem.alt = carta.nome_en;
+        imagem.className = 'miniatura';
+        imagem.loading = 'lazy';
+        celulaImagem.appendChild(imagem);
+    } else {
+        const vazia = document.createElement('span');
+        vazia.className = 'miniatura-vazia';
+        vazia.setAttribute('aria-hidden', 'true');
+        vazia.innerHTML = ICONE_IMAGEM_VAZIA;
+        celulaImagem.appendChild(vazia);
+    }
+
+    const celulaNomeEn = document.createElement('td');
+    celulaNomeEn.className = 'celula-nome';
+    celulaNomeEn.textContent = carta.nome_en;
+
+    const celulaNomePt = document.createElement('td');
+    celulaNomePt.textContent = carta.nome_pt || '—';
+    if (!carta.nome_pt) {
+        celulaNomePt.style.color = 'var(--texto-suave)';
+    }
+
+    const celulaJogo = document.createElement('td');
+    const chipJogo = document.createElement('span');
+    chipJogo.className = 'chip chip-jogo-' + carta.card_game;
+    chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
+    celulaJogo.appendChild(chipJogo);
+
+    const celulaEdicao = document.createElement('td');
+    celulaEdicao.textContent = carta.edicao_nome;
+
+    const celulaRaridade = document.createElement('td');
+    const badge = document.createElement('span');
+    badge.className = 'badge ' + classeRaridade(carta.raridade);
+    badge.textContent = carta.raridade;
+    celulaRaridade.appendChild(badge);
+
+    const celulaAcoes = document.createElement('td');
+    celulaAcoes.className = 'celula-acoes';
+    const { botaoEditar, botaoExcluir } = criarBotoesAcao(carta);
+    celulaAcoes.append(botaoEditar, botaoExcluir);
+
+    linha.append(
+        celulaImagem,
+        celulaNomeEn,
+        celulaNomePt,
+        celulaJogo,
+        celulaEdicao,
+        celulaRaridade,
+        celulaAcoes
+    );
+
+    return linha;
+}
+
+function criarCardCarta(carta) {
+    const card = document.createElement('div');
+    card.className = 'carta-card';
+
+    const areaImagem = document.createElement('div');
+    areaImagem.className = 'carta-card-imagem';
+    if (carta.imagem) {
+        const imagem = document.createElement('img');
+        imagem.src = carta.imagem;
+        imagem.alt = carta.nome_en;
+        imagem.loading = 'lazy';
+        areaImagem.appendChild(imagem);
+    } else {
+        const vazia = document.createElement('span');
+        vazia.className = 'carta-sem-imagem';
+        vazia.setAttribute('aria-hidden', 'true');
+        vazia.innerHTML = ICONE_IMAGEM_VAZIA;
+        areaImagem.appendChild(vazia);
+    }
+
+    const chipJogo = document.createElement('span');
+    chipJogo.className = 'chip chip-jogo-' + carta.card_game;
+    chipJogo.textContent = nomesJogos[carta.card_game] || carta.card_game;
+    areaImagem.appendChild(chipJogo);
+
+    const corpo = document.createElement('div');
+    corpo.className = 'carta-card-corpo';
+
+    const nomeEn = document.createElement('span');
+    nomeEn.className = 'carta-card-nome';
+    nomeEn.textContent = carta.nome_en;
+    corpo.appendChild(nomeEn);
+
+    if (carta.nome_pt) {
+        const nomePt = document.createElement('span');
+        nomePt.className = 'carta-card-nome-pt';
+        nomePt.textContent = carta.nome_pt;
+        corpo.appendChild(nomePt);
+    }
+
+    const meta = document.createElement('div');
+    meta.className = 'carta-card-meta';
+
+    const edicao = document.createElement('span');
+    edicao.className = 'carta-card-edicao';
+    edicao.textContent = carta.edicao_nome;
+
+    const badge = document.createElement('span');
+    badge.className = 'badge ' + classeRaridade(carta.raridade);
+    badge.textContent = carta.raridade;
+
+    meta.append(edicao, badge);
+    corpo.appendChild(meta);
+
+    const acoes = document.createElement('div');
+    acoes.className = 'carta-card-acoes';
+    const { botaoEditar, botaoExcluir } = criarBotoesAcao(carta);
+    acoes.append(botaoEditar, botaoExcluir);
+    corpo.appendChild(acoes);
+
+    card.append(areaImagem, corpo);
+
+    return card;
+}
+
+function definirVisualizacao(modo) {
+    modoVisualizacao = modo;
+    localStorage.setItem(CHAVE_VISUALIZACAO, modo);
+    const ehGrade = modo === 'grade';
+    botaoVerLista.setAttribute('aria-pressed', String(!ehGrade));
+    botaoVerGrade.setAttribute('aria-pressed', String(ehGrade));
+    renderizarCartas();
+}
+
+botaoVerLista.addEventListener('click', () => definirVisualizacao('lista'));
+botaoVerGrade.addEventListener('click', () => definirVisualizacao('grade'));
+
+botaoVerLista.setAttribute('aria-pressed', String(modoVisualizacao !== 'grade'));
+botaoVerGrade.setAttribute('aria-pressed', String(modoVisualizacao === 'grade'));
 
 let temporizadorAviso = null;
 
