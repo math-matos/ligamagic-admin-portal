@@ -1,0 +1,1 @@
+#Portal Administrativo - Gestão de Cartas (LigaMagic)
