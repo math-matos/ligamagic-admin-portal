@@ -4,37 +4,6 @@ const nomesJogos = {
     yugioh: 'Yu-Gi-Oh!'
 };
 
-const ICONE_IMAGEM_VAZIA =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-    '<rect x="3" y="3" width="18" height="18" rx="2"></rect>' +
-    '<circle cx="8.5" cy="8.5" r="1.5"></circle>' +
-    '<polyline points="21 15 16 10 5 21"></polyline></svg>';
-
-const ICONE_EDITAR =
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-    '<path d="M12 20h9"></path>' +
-    '<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>';
-
-const ICONE_EXCLUIR =
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-    '<polyline points="3 6 5 6 21 6"></polyline>' +
-    '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
-
-const ICONE_BANDEIRA_EUA =
-    '<svg class="bandeira-icone" viewBox="0 0 20 14" role="img" aria-label="Inglês (EUA)">' +
-    '<rect width="20" height="14" fill="#fff"></rect>' +
-    '<rect y="0" width="20" height="2" fill="#B22234"></rect>' +
-    '<rect y="4" width="20" height="2" fill="#B22234"></rect>' +
-    '<rect y="8" width="20" height="2" fill="#B22234"></rect>' +
-    '<rect y="12" width="20" height="2" fill="#B22234"></rect>' +
-    '<rect width="8" height="8" fill="#3C3B6E"></rect></svg>';
-
-const ICONE_BANDEIRA_BRASIL =
-    '<svg class="bandeira-icone" viewBox="0 0 20 14" role="img" aria-label="Português (Brasil)">' +
-    '<rect width="20" height="14" fill="#009739"></rect>' +
-    '<polygon points="10,1.5 18.5,7 10,12.5 1.5,7" fill="#FEDD00"></polygon>' +
-    '<circle cx="10" cy="7" r="3.2" fill="#012169"></circle></svg>';
-
 function normalizarTexto(texto) {
     return (texto || '')
         .toLowerCase()
@@ -434,14 +403,14 @@ function criarBotoesAcao(carta) {
     const botaoEditar = document.createElement('button');
     botaoEditar.type = 'button';
     botaoEditar.className = 'botao botao-neutro botao-pequeno';
-    botaoEditar.innerHTML = ICONE_EDITAR + '<span>Editar</span>';
+    botaoEditar.innerHTML = ICONES.EDITAR + '<span>Editar</span>';
     botaoEditar.setAttribute('aria-label', `Editar ${carta.nome_en}`);
     botaoEditar.addEventListener('click', () => abrirFormulario(carta));
 
     const botaoExcluir = document.createElement('button');
     botaoExcluir.type = 'button';
     botaoExcluir.className = 'botao botao-neutro botao-pequeno botao-excluir';
-    botaoExcluir.innerHTML = ICONE_EXCLUIR + '<span>Excluir</span>';
+    botaoExcluir.innerHTML = ICONES.EXCLUIR + '<span>Excluir</span>';
     botaoExcluir.setAttribute('aria-label', `Excluir ${carta.nome_en}`);
     botaoExcluir.addEventListener('click', () => confirmarExclusao(carta));
 
@@ -465,18 +434,18 @@ function criarLinhaCarta(carta) {
         const vazia = document.createElement('span');
         vazia.className = 'miniatura-vazia';
         vazia.setAttribute('aria-hidden', 'true');
-        vazia.innerHTML = ICONE_IMAGEM_VAZIA;
+        vazia.innerHTML = ICONES.IMAGEM_VAZIA;
         celulaImagem.appendChild(vazia);
     }
 
     const celulaNomeEn = document.createElement('td');
     celulaNomeEn.className = 'celula-nome';
-    celulaNomeEn.innerHTML = ICONE_BANDEIRA_EUA;
+    celulaNomeEn.innerHTML = ICONES.BANDEIRA_EUA;
     celulaNomeEn.appendChild(document.createTextNode(carta.nome_en));
 
     const celulaNomePt = document.createElement('td');
     if (carta.nome_pt) {
-        celulaNomePt.innerHTML = ICONE_BANDEIRA_BRASIL;
+        celulaNomePt.innerHTML = ICONES.BANDEIRA_BRASIL;
         celulaNomePt.appendChild(document.createTextNode(carta.nome_pt));
     } else {
         celulaNomePt.textContent = '—';
@@ -535,7 +504,7 @@ function criarCardCarta(carta) {
         const vazia = document.createElement('span');
         vazia.className = 'carta-sem-imagem';
         vazia.setAttribute('aria-hidden', 'true');
-        vazia.innerHTML = ICONE_IMAGEM_VAZIA;
+        vazia.innerHTML = ICONES.IMAGEM_VAZIA;
         areaImagem.appendChild(vazia);
     }
 
@@ -549,14 +518,14 @@ function criarCardCarta(carta) {
 
     const nomeEn = document.createElement('span');
     nomeEn.className = 'carta-card-nome';
-    nomeEn.innerHTML = ICONE_BANDEIRA_EUA;
+    nomeEn.innerHTML = ICONES.BANDEIRA_EUA;
     nomeEn.appendChild(document.createTextNode(carta.nome_en));
     corpo.appendChild(nomeEn);
 
     if (carta.nome_pt) {
         const nomePt = document.createElement('span');
         nomePt.className = 'carta-card-nome-pt';
-        nomePt.innerHTML = ICONE_BANDEIRA_BRASIL;
+        nomePt.innerHTML = ICONES.BANDEIRA_BRASIL;
         nomePt.appendChild(document.createTextNode(carta.nome_pt));
         corpo.appendChild(nomePt);
     }

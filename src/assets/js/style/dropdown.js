@@ -1,9 +1,4 @@
 (function () {
-    const CHEVRON =
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
-    const CHECK =
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-
     const instancias = [];
 
     function criarSelecao(select) {
@@ -27,7 +22,7 @@
         const seta = document.createElement('span');
         seta.className = 'selecao-seta';
         seta.setAttribute('aria-hidden', 'true');
-        seta.innerHTML = CHEVRON;
+        seta.innerHTML = ICONES.CHEVRON;
 
         gatilho.append(valor, seta);
 
@@ -83,7 +78,7 @@
             const marca = document.createElement('span');
             marca.className = 'selecao-opcao-marca';
             marca.setAttribute('aria-hidden', 'true');
-            marca.innerHTML = CHECK;
+            marca.innerHTML = ICONES.CHECK;
 
             item.append(texto, marca);
             item.addEventListener('click', () => escolher(inst, indice));
