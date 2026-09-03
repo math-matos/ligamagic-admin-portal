@@ -35,12 +35,15 @@ const ICONE_BANDEIRA_BRASIL =
     '<polygon points="10,1.5 18.5,7 10,12.5 1.5,7" fill="#FEDD00"></polygon>' +
     '<circle cx="10" cy="7" r="3.2" fill="#012169"></circle></svg>';
 
-function classeRaridade(raridade) {
-    const base = (raridade || '')
+function normalizarTexto(texto) {
+    return (texto || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .replace(/\s+/g, '-');
+        .replace(/[̀-ͯ]/g, '');
+}
+
+function classeRaridade(raridade) {
+    const base = normalizarTexto(raridade).replace(/\s+/g, '-');
     return 'badge-' + base;
 }
 
@@ -62,11 +65,20 @@ const botaoAlternarFiltros = document.getElementById('botao-alternar-filtros');
 const botaoLimparFiltros = document.getElementById('botao-limpar-filtros');
 const badgeFiltrosAtivos = document.getElementById('badge-filtros-ativos');
 const listaFiltroEdicao = document.getElementById('lista-filtro-edicao');
+const listaFiltroJogo = document.getElementById('lista-filtro-jogo');
+const vazioFiltroJogo = document.getElementById('vazio-filtro-jogo');
+const buscaFiltroJogo = document.getElementById('busca-filtro-jogo');
+const buscaFiltroEdicao = document.getElementById('busca-filtro-edicao');
 
 const filtros = {
     jogos: new Set(),
     raridades: new Set(),
     edicoes: new Set()
+};
+
+const buscaOpcoes = {
+    jogo: '',
+    edicao: ''
 };
 
 function chaveEdicao(carta) {
@@ -93,6 +105,32 @@ function renderizarContadoresEstaticos() {
     });
 }
 
+function filtrarOpcoesJogo() {
+    const termo = buscaOpcoes.jogo;
+    let visiveis = 0;
+
+    listaFiltroJogo.querySelectorAll('.filtro-opcao').forEach((opcao) => {
+        const texto = normalizarTexto(opcao.querySelector('.filtro-texto').textContent);
+        const corresponde = !termo || texto.includes(termo);
+        opcao.hidden = !corresponde;
+        if (corresponde) {
+            visiveis++;
+        }
+    });
+
+    vazioFiltroJogo.hidden = visiveis > 0;
+}
+
+buscaFiltroJogo.addEventListener('input', () => {
+    buscaOpcoes.jogo = normalizarTexto(buscaFiltroJogo.value.trim());
+    filtrarOpcoesJogo();
+});
+
+buscaFiltroEdicao.addEventListener('input', () => {
+    buscaOpcoes.edicao = normalizarTexto(buscaFiltroEdicao.value.trim());
+    renderizarListaEdicao();
+});
+
 function renderizarListaEdicao() {
     const base = filtros.jogos.size
         ? cartas.filter((carta) => filtros.jogos.has(carta.card_game))
@@ -115,14 +153,15 @@ function renderizarListaEdicao() {
 
     listaFiltroEdicao.innerHTML = '';
 
-    const entradas = Array.from(mapa.entries()).sort((a, b) =>
-        a[1].nome.localeCompare(b[1].nome, 'pt-BR')
-    );
+    const termoBusca = buscaOpcoes.edicao;
+    const entradas = Array.from(mapa.entries())
+        .filter(([, info]) => !termoBusca || normalizarTexto(info.nome).includes(termoBusca))
+        .sort((a, b) => a[1].nome.localeCompare(b[1].nome, 'pt-BR'));
 
     if (!entradas.length) {
         const vazio = document.createElement('p');
         vazio.className = 'filtro-vazio';
-        vazio.textContent = 'Nenhuma edição disponível.';
+        vazio.textContent = mapa.size ? 'Nenhuma edição encontrada.' : 'Nenhuma edição disponível.';
         listaFiltroEdicao.appendChild(vazio);
         return;
     }

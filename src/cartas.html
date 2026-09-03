@@ -42,24 +42,34 @@
 
             <div class="filtro-grupo">
                 <h3 class="filtro-grupo-titulo">Card Game</h3>
-                <label class="filtro-opcao">
-                    <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="magic">
-                    <span class="filtro-caixa" aria-hidden="true"></span>
-                    <span class="filtro-texto">Magic: The Gathering</span>
-                    <span class="filtro-contagem"></span>
-                </label>
-                <label class="filtro-opcao">
-                    <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="pokemon">
-                    <span class="filtro-caixa" aria-hidden="true"></span>
-                    <span class="filtro-texto">Pokémon</span>
-                    <span class="filtro-contagem"></span>
-                </label>
-                <label class="filtro-opcao">
-                    <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="yugioh">
-                    <span class="filtro-caixa" aria-hidden="true"></span>
-                    <span class="filtro-texto">Yu-Gi-Oh!</span>
-                    <span class="filtro-contagem"></span>
-                </label>
+                <span class="filtro-busca-campo">
+                    <svg class="filtro-busca-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="busca-filtro-jogo" class="filtro-busca" placeholder="Buscar jogo..." aria-label="Buscar Card Game">
+                </span>
+                <div id="lista-filtro-jogo" class="filtro-opcoes">
+                    <label class="filtro-opcao">
+                        <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="magic">
+                        <span class="filtro-caixa" aria-hidden="true"></span>
+                        <span class="filtro-texto">Magic: The Gathering</span>
+                        <span class="filtro-contagem"></span>
+                    </label>
+                    <label class="filtro-opcao">
+                        <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="pokemon">
+                        <span class="filtro-caixa" aria-hidden="true"></span>
+                        <span class="filtro-texto">Pokémon</span>
+                        <span class="filtro-contagem"></span>
+                    </label>
+                    <label class="filtro-opcao">
+                        <input type="checkbox" class="filtro-checkbox" data-grupo="jogo" value="yugioh">
+                        <span class="filtro-caixa" aria-hidden="true"></span>
+                        <span class="filtro-texto">Yu-Gi-Oh!</span>
+                        <span class="filtro-contagem"></span>
+                    </label>
+                </div>
+                <p class="filtro-vazio" id="vazio-filtro-jogo" hidden>Nenhum resultado.</p>
             </div>
 
             <div class="filtro-grupo">
@@ -104,6 +114,13 @@
 
             <div class="filtro-grupo">
                 <h3 class="filtro-grupo-titulo">Edição</h3>
+                <span class="filtro-busca-campo">
+                    <svg class="filtro-busca-icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="busca-filtro-edicao" class="filtro-busca" placeholder="Buscar edição..." aria-label="Buscar edição">
+                </span>
                 <div id="lista-filtro-edicao" class="filtro-lista-edicao"></div>
             </div>
         </aside>

@@ -662,12 +662,12 @@ a { color: var(--primaria); }
 }
 
 .conteudo {
-    max-width: 1320px;
+    max-width: 1440px;
     margin: 0 auto;
     padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) 4rem;
     display: flex;
     align-items: flex-start;
-    gap: 1.75rem;
+    gap: 1.25rem;
 }
 
 .area-principal {
@@ -677,10 +677,10 @@ a { color: var(--primaria); }
 
 .filtros-sidebar {
     flex-shrink: 0;
-    width: 240px;
+    width: 210px;
     display: flex;
     flex-direction: column;
-    gap: 1.35rem;
+    gap: 1.2rem;
     position: sticky;
     top: 5.75rem;
     max-height: calc(100vh - 7.5rem);
@@ -688,7 +688,7 @@ a { color: var(--primaria); }
     background-color: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    padding: 1.25rem;
+    padding: 1.1rem;
     box-shadow: var(--sombra-sm);
 }
 
@@ -729,6 +729,47 @@ a { color: var(--primaria); }
     letter-spacing: 0.05em;
     color: var(--texto-suave);
     margin-bottom: 0.55rem;
+}
+
+.filtro-busca-campo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.filtro-busca-icone {
+    position: absolute;
+    left: 0.55rem;
+    color: var(--texto-suave);
+    pointer-events: none;
+    display: flex;
+}
+
+.filtro-busca {
+    width: 100%;
+    padding: 0.4rem 0.6rem 0.4rem 1.9rem;
+    border: 1px solid var(--border-forte);
+    border-radius: var(--r-sm);
+    font-family: inherit;
+    font-size: var(--fs-xs);
+    color: var(--texto);
+    background-color: var(--surface-2);
+    transition: border-color var(--t), box-shadow var(--t), background-color var(--t);
+}
+.filtro-busca::placeholder { color: var(--placeholder); }
+.filtro-busca:hover { border-color: var(--gray-400); }
+.filtro-busca:focus {
+    outline: none;
+    border-color: var(--primaria);
+    box-shadow: var(--anel-foco);
+    background-color: var(--surface);
+}
+.filtro-busca::-webkit-search-cancel-button { cursor: pointer; }
+
+.filtro-opcoes {
+    display: flex;
+    flex-direction: column;
 }
 
 .filtro-opcao {
