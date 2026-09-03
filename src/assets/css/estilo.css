@@ -144,6 +144,20 @@ h1 {
     text-align: left;
 }
 
+.link-rodape {
+    margin-top: 1.25rem;
+}
+
+.caixa-login a {
+    color: var(--cor-primaria);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.caixa-login a:hover {
+    text-decoration: underline;
+}
+
 .texto-suave {
     color: var(--cor-texto-suave);
     font-size: 0.875rem;
