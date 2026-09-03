@@ -20,6 +20,21 @@ const ICONE_EXCLUIR =
     '<polyline points="3 6 5 6 21 6"></polyline>' +
     '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
 
+const ICONE_BANDEIRA_EUA =
+    '<svg class="bandeira-icone" viewBox="0 0 20 14" role="img" aria-label="Inglês (EUA)">' +
+    '<rect width="20" height="14" fill="#fff"></rect>' +
+    '<rect y="0" width="20" height="2" fill="#B22234"></rect>' +
+    '<rect y="4" width="20" height="2" fill="#B22234"></rect>' +
+    '<rect y="8" width="20" height="2" fill="#B22234"></rect>' +
+    '<rect y="12" width="20" height="2" fill="#B22234"></rect>' +
+    '<rect width="8" height="8" fill="#3C3B6E"></rect></svg>';
+
+const ICONE_BANDEIRA_BRASIL =
+    '<svg class="bandeira-icone" viewBox="0 0 20 14" role="img" aria-label="Português (Brasil)">' +
+    '<rect width="20" height="14" fill="#009739"></rect>' +
+    '<polygon points="10,1.5 18.5,7 10,12.5 1.5,7" fill="#FEDD00"></polygon>' +
+    '<circle cx="10" cy="7" r="3.2" fill="#012169"></circle></svg>';
+
 function classeRaridade(raridade) {
     const base = (raridade || '')
         .toLowerCase()
@@ -40,6 +55,181 @@ const estadoVazio = document.getElementById('estado-vazio');
 const estadoVazioTexto = document.getElementById('estado-vazio-texto');
 const estadoVazioDica = document.querySelector('.estado-vazio-dica');
 const campoBusca = document.getElementById('campo-busca');
+
+const sidebarFiltros = document.getElementById('filtros-sidebar');
+const backdropFiltros = document.getElementById('filtros-backdrop');
+const botaoAlternarFiltros = document.getElementById('botao-alternar-filtros');
+const botaoLimparFiltros = document.getElementById('botao-limpar-filtros');
+const badgeFiltrosAtivos = document.getElementById('badge-filtros-ativos');
+const listaFiltroEdicao = document.getElementById('lista-filtro-edicao');
+
+const filtros = {
+    jogos: new Set(),
+    raridades: new Set(),
+    edicoes: new Set()
+};
+
+function chaveEdicao(carta) {
+    return `${carta.card_game}::${carta.edicao_id}`;
+}
+
+function definirContagem(checkbox, total) {
+    const opcao = checkbox.closest('.filtro-opcao');
+    const contagem = opcao.querySelector('.filtro-contagem');
+    if (contagem) {
+        contagem.textContent = String(total);
+    }
+    opcao.classList.toggle('sem-resultado', total === 0);
+}
+
+function renderizarContadoresEstaticos() {
+    sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="jogo"]').forEach((checkbox) => {
+        const total = cartas.filter((carta) => carta.card_game === checkbox.value).length;
+        definirContagem(checkbox, total);
+    });
+    sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="raridade"]').forEach((checkbox) => {
+        const total = cartas.filter((carta) => carta.raridade === checkbox.value).length;
+        definirContagem(checkbox, total);
+    });
+}
+
+function renderizarListaEdicao() {
+    const base = filtros.jogos.size
+        ? cartas.filter((carta) => filtros.jogos.has(carta.card_game))
+        : cartas;
+
+    const mapa = new Map();
+    base.forEach((carta) => {
+        const chave = chaveEdicao(carta);
+        if (!mapa.has(chave)) {
+            mapa.set(chave, { nome: carta.edicao_nome, total: 0 });
+        }
+        mapa.get(chave).total += 1;
+    });
+
+    Array.from(filtros.edicoes).forEach((chave) => {
+        if (!mapa.has(chave)) {
+            filtros.edicoes.delete(chave);
+        }
+    });
+
+    listaFiltroEdicao.innerHTML = '';
+
+    const entradas = Array.from(mapa.entries()).sort((a, b) =>
+        a[1].nome.localeCompare(b[1].nome, 'pt-BR')
+    );
+
+    if (!entradas.length) {
+        const vazio = document.createElement('p');
+        vazio.className = 'filtro-vazio';
+        vazio.textContent = 'Nenhuma edição disponível.';
+        listaFiltroEdicao.appendChild(vazio);
+        return;
+    }
+
+    entradas.forEach(([chave, info]) => {
+        const label = document.createElement('label');
+        label.className = 'filtro-opcao';
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'filtro-checkbox';
+        input.dataset.grupo = 'edicao';
+        input.value = chave;
+        input.checked = filtros.edicoes.has(chave);
+
+        const caixa = document.createElement('span');
+        caixa.className = 'filtro-caixa';
+        caixa.setAttribute('aria-hidden', 'true');
+
+        const texto = document.createElement('span');
+        texto.className = 'filtro-texto';
+        texto.textContent = info.nome;
+
+        const contagem = document.createElement('span');
+        contagem.className = 'filtro-contagem';
+        contagem.textContent = String(info.total);
+
+        label.append(input, caixa, texto, contagem);
+        listaFiltroEdicao.appendChild(label);
+    });
+}
+
+function contarFiltrosAtivos() {
+    return filtros.jogos.size + filtros.raridades.size + filtros.edicoes.size;
+}
+
+function atualizarEstadoFiltros() {
+    const total = contarFiltrosAtivos();
+    botaoLimparFiltros.hidden = total === 0;
+    badgeFiltrosAtivos.hidden = total === 0;
+    if (total > 0) {
+        badgeFiltrosAtivos.textContent = String(total);
+    }
+}
+
+sidebarFiltros.addEventListener('change', (evento) => {
+    const alvo = evento.target;
+    if (!alvo.classList.contains('filtro-checkbox')) {
+        return;
+    }
+
+    const conjuntos = { jogo: filtros.jogos, raridade: filtros.raridades, edicao: filtros.edicoes };
+    const conjunto = conjuntos[alvo.dataset.grupo];
+    if (!conjunto) {
+        return;
+    }
+
+    if (alvo.checked) {
+        conjunto.add(alvo.value);
+    } else {
+        conjunto.delete(alvo.value);
+    }
+
+    if (alvo.dataset.grupo === 'jogo') {
+        renderizarListaEdicao();
+    }
+
+    atualizarEstadoFiltros();
+    renderizarCartas();
+});
+
+botaoLimparFiltros.addEventListener('click', () => {
+    filtros.jogos.clear();
+    filtros.raridades.clear();
+    filtros.edicoes.clear();
+    sidebarFiltros.querySelectorAll('.filtro-checkbox').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+    renderizarListaEdicao();
+    atualizarEstadoFiltros();
+    renderizarCartas();
+});
+
+function abrirFiltrosMobile() {
+    sidebarFiltros.classList.add('aberta');
+    backdropFiltros.hidden = false;
+    requestAnimationFrame(() => backdropFiltros.classList.add('aberta'));
+    botaoAlternarFiltros.setAttribute('aria-expanded', 'true');
+    empilharModal(fecharFiltrosMobile);
+}
+
+function fecharFiltrosMobile() {
+    sidebarFiltros.classList.remove('aberta');
+    backdropFiltros.classList.remove('aberta');
+    botaoAlternarFiltros.setAttribute('aria-expanded', 'false');
+    desempilharModal(fecharFiltrosMobile);
+    setTimeout(() => {
+        if (!backdropFiltros.classList.contains('aberta')) {
+            backdropFiltros.hidden = true;
+        }
+    }, 180);
+}
+
+botaoAlternarFiltros.addEventListener('click', () => {
+    sidebarFiltros.classList.contains('aberta') ? fecharFiltrosMobile() : abrirFiltrosMobile();
+});
+backdropFiltros.addEventListener('click', fecharFiltrosMobile);
 
 const CHAVE_VISUALIZACAO = 'cartas-visualizacao';
 let modoVisualizacao = localStorage.getItem(CHAVE_VISUALIZACAO) === 'lista' ? 'lista' : 'grade';
@@ -129,6 +319,8 @@ async function carregarCartas() {
 
         const dados = await resposta.json();
         cartas = dados.cartas || [];
+        renderizarContadoresEstaticos();
+        renderizarListaEdicao();
         renderizarCartas();
     } catch (erro) {
         listaCartas.innerHTML = '';
@@ -146,11 +338,20 @@ async function carregarCartas() {
 function filtrarCartas() {
     const termo = campoBusca.value.trim().toLowerCase();
 
-    if (!termo) {
-        return cartas;
-    }
-
     return cartas.filter((carta) => {
+        if (filtros.jogos.size && !filtros.jogos.has(carta.card_game)) {
+            return false;
+        }
+        if (filtros.raridades.size && !filtros.raridades.has(carta.raridade)) {
+            return false;
+        }
+        if (filtros.edicoes.size && !filtros.edicoes.has(chaveEdicao(carta))) {
+            return false;
+        }
+        if (!termo) {
+            return true;
+        }
+
         const campos = [
             carta.nome_en,
             carta.nome_pt || '',
@@ -167,12 +368,13 @@ function renderizarCartas() {
     const ehGrade = modoVisualizacao === 'grade';
     const temResultados = visiveis.length > 0;
 
-    estadoVazioTexto.textContent = campoBusca.value.trim()
+    const temFiltroAtivo = Boolean(campoBusca.value.trim()) || contarFiltrosAtivos() > 0;
+    estadoVazioTexto.textContent = temFiltroAtivo
         ? 'Nenhuma carta encontrada.'
         : 'Nenhuma carta cadastrada ainda.';
     if (estadoVazioDica) {
-        estadoVazioDica.textContent = campoBusca.value.trim()
-            ? 'Tente outro termo ou cadastre uma nova carta.'
+        estadoVazioDica.textContent = temFiltroAtivo
+            ? 'Tente ajustar os filtros ou o termo de busca.'
             : 'Clique em “Nova Carta” para começar.';
     }
 
@@ -230,11 +432,15 @@ function criarLinhaCarta(carta) {
 
     const celulaNomeEn = document.createElement('td');
     celulaNomeEn.className = 'celula-nome';
-    celulaNomeEn.textContent = carta.nome_en;
+    celulaNomeEn.innerHTML = ICONE_BANDEIRA_EUA;
+    celulaNomeEn.appendChild(document.createTextNode(carta.nome_en));
 
     const celulaNomePt = document.createElement('td');
-    celulaNomePt.textContent = carta.nome_pt || '—';
-    if (!carta.nome_pt) {
+    if (carta.nome_pt) {
+        celulaNomePt.innerHTML = ICONE_BANDEIRA_BRASIL;
+        celulaNomePt.appendChild(document.createTextNode(carta.nome_pt));
+    } else {
+        celulaNomePt.textContent = '—';
         celulaNomePt.style.color = 'var(--texto-suave)';
     }
 
@@ -304,13 +510,15 @@ function criarCardCarta(carta) {
 
     const nomeEn = document.createElement('span');
     nomeEn.className = 'carta-card-nome';
-    nomeEn.textContent = carta.nome_en;
+    nomeEn.innerHTML = ICONE_BANDEIRA_EUA;
+    nomeEn.appendChild(document.createTextNode(carta.nome_en));
     corpo.appendChild(nomeEn);
 
     if (carta.nome_pt) {
         const nomePt = document.createElement('span');
         nomePt.className = 'carta-card-nome-pt';
-        nomePt.textContent = carta.nome_pt;
+        nomePt.innerHTML = ICONE_BANDEIRA_BRASIL;
+        nomePt.appendChild(document.createTextNode(carta.nome_pt));
         corpo.appendChild(nomePt);
     }
 
