@@ -380,6 +380,7 @@ async function carregarCartas() {
         cartas = dados.cartas || [];
         renderizarContadoresEstaticos();
         renderizarListaEdicao();
+        renderizarHub();
         renderizarCartas();
     } catch (erro) {
         listaCartas.innerHTML = '';
@@ -697,6 +698,69 @@ document.getElementById('botao-sair').addEventListener('click', async () => {
     await fetch('api/logout.php', { method: 'POST' });
     window.location.href = 'index.html';
 });
+
+const hubJogos = document.getElementById('hub-jogos');
+const areaCartas = document.getElementById('area-cartas');
+const botaoVoltarHub = document.getElementById('botao-voltar-hub');
+
+function renderizarHub() {
+    hubJogos.querySelectorAll('.hub-card-contagem').forEach((elemento) => {
+        const alvo = elemento.dataset.contagem;
+        const total = alvo === 'todas'
+            ? cartas.length
+            : cartas.filter((carta) => carta.card_game === alvo).length;
+        const rotulo = total === 1 ? '1 carta' : `${total} cartas`;
+        elemento.textContent = rotulo;
+    });
+}
+
+function entrarModoCartas(jogo) {
+    filtros.jogos.clear();
+    sidebarFiltros.querySelectorAll('.filtro-checkbox[data-grupo="jogo"]').forEach((checkbox) => {
+        checkbox.checked = jogo !== 'todas' && checkbox.value === jogo;
+    });
+    if (jogo !== 'todas') {
+        filtros.jogos.add(jogo);
+    }
+
+    renderizarListaEdicao();
+    sincronizarRaridadesComJogo();
+    atualizarEstadoFiltros();
+    renderizarCartas();
+
+    document.body.classList.remove('tela-hub');
+    hubJogos.hidden = true;
+    areaCartas.hidden = false;
+    window.scrollTo({ top: 0 });
+}
+
+function entrarModoHub() {
+    campoBusca.value = '';
+    filtros.jogos.clear();
+    filtros.raridades.clear();
+    filtros.edicoes.clear();
+    sidebarFiltros.querySelectorAll('.filtro-checkbox').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+    renderizarListaEdicao();
+    filtrarOpcoesRaridade();
+    atualizarEstadoFiltros();
+    renderizarCartas();
+
+    document.body.classList.add('tela-hub');
+    areaCartas.hidden = true;
+    hubJogos.hidden = false;
+    fecharFiltrosMobile();
+    window.scrollTo({ top: 0 });
+}
+
+hubJogos.querySelectorAll('.hub-card').forEach((card) => {
+    card.addEventListener('click', () => entrarModoCartas(card.dataset.jogo));
+});
+
+botaoVoltarHub.addEventListener('click', entrarModoHub);
+
+document.body.classList.add('tela-hub');
 
 verificarSessao();
 carregarCartas();
