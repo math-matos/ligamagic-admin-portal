@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Fonte única das edições e raridades de cada card game.
- * IDEAL SER TROCADA PARA USO DIRETO DO BACKEND AO INVES DE HARDCODED
- */
-
 const EDICOES_POR_JOGO = [
     'magic' => [
         ['id' => 'dom', 'name' => 'Dominaria'],
