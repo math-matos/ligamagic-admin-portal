@@ -13,6 +13,7 @@ const erroFormulario = document.getElementById('erro-formulario');
 const botaoSalvar = document.getElementById('botao-salvar');
 
 let edicaoPendente = null;
+let raridadePendente = null;
 
 function abrirFormulario(carta = null) {
     formCarta.reset();
@@ -24,6 +25,7 @@ function abrirFormulario(carta = null) {
         dropzoneTitulo.textContent = dropzoneTituloPadrao;
     }
     resetarEdicoes();
+    resetarRaridades();
 
     if (carta) {
         tituloFormulario.textContent = 'Editar Carta';
@@ -31,7 +33,6 @@ function abrirFormulario(carta = null) {
         campoNomeEn.value = carta.nome_en;
         campoNomePt.value = carta.nome_pt || '';
         campoCardGame.value = carta.card_game;
-        campoRaridade.value = carta.raridade;
 
         if (typeof sincronizarSelecoes === 'function') {
             sincronizarSelecoes();
@@ -43,7 +44,9 @@ function abrirFormulario(carta = null) {
         }
 
         edicaoPendente = carta.edicao_id;
+        raridadePendente = carta.raridade;
         carregarEdicoes(carta.card_game);
+        carregarRaridades(carta.card_game);
     } else {
         tituloFormulario.textContent = 'Nova Carta';
     }
@@ -61,6 +64,11 @@ function fecharFormulario() {
 function resetarEdicoes() {
     campoEdicao.disabled = true;
     campoEdicao.innerHTML = '<option value="">Selecione um Card Game primeiro</option>';
+}
+
+function resetarRaridades() {
+    campoRaridade.disabled = true;
+    campoRaridade.innerHTML = '<option value="">Selecione um Card Game primeiro</option>';
 }
 
 async function carregarEdicoes(jogo) {
@@ -96,13 +104,49 @@ async function carregarEdicoes(jogo) {
     }
 }
 
+async function carregarRaridades(jogo) {
+    campoRaridade.disabled = true;
+    campoRaridade.innerHTML = '<option value="">Carregando raridades...</option>';
+
+    try {
+        const resposta = await fetch(`api/raridades.php?jogo=${encodeURIComponent(jogo)}`);
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+            campoRaridade.innerHTML = '<option value="">Erro ao carregar raridades</option>';
+            return;
+        }
+
+        campoRaridade.innerHTML = '<option value="">Selecione...</option>';
+
+        dados.raridades.forEach((raridade) => {
+            const opcao = document.createElement('option');
+            opcao.value = raridade;
+            opcao.textContent = raridade;
+            campoRaridade.appendChild(opcao);
+        });
+
+        campoRaridade.disabled = false;
+
+        if (raridadePendente) {
+            campoRaridade.value = raridadePendente;
+            raridadePendente = null;
+        }
+    } catch (erro) {
+        campoRaridade.innerHTML = '<option value="">Erro ao carregar raridades</option>';
+    }
+}
+
 campoCardGame.addEventListener('change', () => {
     edicaoPendente = null;
+    raridadePendente = null;
 
     if (campoCardGame.value) {
         carregarEdicoes(campoCardGame.value);
+        carregarRaridades(campoCardGame.value);
     } else {
         resetarEdicoes();
+        resetarRaridades();
     }
 });
 

@@ -38,6 +38,9 @@ const listaFiltroJogo = document.getElementById('lista-filtro-jogo');
 const vazioFiltroJogo = document.getElementById('vazio-filtro-jogo');
 const buscaFiltroJogo = document.getElementById('busca-filtro-jogo');
 const buscaFiltroEdicao = document.getElementById('busca-filtro-edicao');
+const listaFiltroRaridade = document.getElementById('lista-filtro-raridade');
+const vazioFiltroRaridade = document.getElementById('vazio-filtro-raridade');
+const buscaFiltroRaridade = document.getElementById('busca-filtro-raridade');
 
 const filtros = {
     jogos: new Set(),
@@ -47,7 +50,8 @@ const filtros = {
 
 const buscaOpcoes = {
     jogo: '',
-    edicao: ''
+    edicao: '',
+    raridade: ''
 };
 
 function chaveEdicao(carta) {
@@ -90,9 +94,30 @@ function filtrarOpcoesJogo() {
     vazioFiltroJogo.hidden = visiveis > 0;
 }
 
+function filtrarOpcoesRaridade() {
+    const termo = buscaOpcoes.raridade;
+    let visiveis = 0;
+
+    listaFiltroRaridade.querySelectorAll('.filtro-opcao').forEach((opcao) => {
+        const texto = normalizarTexto(opcao.querySelector('.filtro-texto').textContent);
+        const corresponde = !termo || texto.includes(termo);
+        opcao.hidden = !corresponde;
+        if (corresponde) {
+            visiveis++;
+        }
+    });
+
+    vazioFiltroRaridade.hidden = visiveis > 0;
+}
+
 buscaFiltroJogo.addEventListener('input', () => {
     buscaOpcoes.jogo = normalizarTexto(buscaFiltroJogo.value.trim());
     filtrarOpcoesJogo();
+});
+
+buscaFiltroRaridade.addEventListener('input', () => {
+    buscaOpcoes.raridade = normalizarTexto(buscaFiltroRaridade.value.trim());
+    filtrarOpcoesRaridade();
 });
 
 buscaFiltroEdicao.addEventListener('input', () => {
