@@ -81,13 +81,12 @@ function salvarImagem(): ?string
         'image/jpeg' => 'jpg',
         'image/png' => 'png',
         'image/webp' => 'webp',
-        'image/gif' => 'gif',
     ];
 
     $tipo = mime_content_type($arquivo['tmp_name']);
 
     if (!isset($tiposPermitidos[$tipo])) {
-        responder(422, ['erro' => 'Formato de imagem inválido. Use JPG, PNG, WEBP ou GIF']);
+        responder(422, ['erro' => 'Formato de imagem inválido. Use JPG, PNG, WEBP']);
     }
 
     $nomeArquivo = uniqid('carta_', true) . '.' . $tiposPermitidos[$tipo];

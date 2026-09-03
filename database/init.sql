@@ -27,9 +27,9 @@ CREATE TABLE IF NOT EXISTS cartas (
 INSERT INTO usuarios (usuario, senha, nome) VALUES
 ('admin', '$2y$10$4YH5is77VP7iYP7SLLj8NeSR44Vg94TpvOl3EL1iD5.Td8wcBWHky', 'Mr. Liga');
 
-INSERT INTO cartas (nome_en, nome_pt, card_game, edicao_id, edicao_nome, raridade) VALUES
-('Teferi, Hero of Dominaria', 'Teferi, Herói de Dominária', 'magic', 'dom', 'Dominaria', 'Mítica'),
-('Nicol Bolas, Dragon-God', 'Nicol Bolas, Deus-Dragão', 'magic', 'war', 'War of the Spark', 'Mítica'),
-('Charizard', NULL, 'pokemon', 'base1', 'Base Set', 'Rara'),
-('Pikachu', NULL, 'pokemon', 'swsh1', 'Sword & Shield', 'Comum'),
-('Blue-Eyes White Dragon', 'Dragão Branco de Olhos Azuis', 'yugioh', 'lob', 'Legend of Blue Eyes White Dragon', 'Ultra Rara');
+INSERT INTO cartas (nome_en, nome_pt, card_game, edicao_id, edicao_nome, raridade, imagem) VALUES
+('Teferi, Hero of Dominaria', 'Teferi, Herói de Dominária', 'magic', 'dom', 'Dominaria', 'Mítica', 'https://cards.scryfall.io/normal/front/5/d/5d10b752-d9cb-419d-a5c4-d4ee1acb655e.jpg'),
+('Nicol Bolas, Dragon-God', 'Nicol Bolas, Deus-Dragão', 'magic', 'war', 'War of the Spark', 'Mítica', 'https://cards.scryfall.io/normal/front/9/8/98b68dea-a7be-4f99-8a50-4c8cf0e0f7a9.jpg'),
+('Charizard', NULL, 'pokemon', 'base1', 'Base Set', 'Rara', 'https://images.pokemontcg.io/base1/4.png'),
+('Pikachu', NULL, 'pokemon', 'swsh1', 'Sword & Shield', 'Comum', NULL),
+('Blue-Eyes White Dragon', 'Dragão Branco de Olhos Azuis', 'yugioh', 'lob', 'Legend of Blue Eyes White Dragon', 'Ultra Rara', 'https://images.ygoprodeck.com/images/cards/89631139.jpg');

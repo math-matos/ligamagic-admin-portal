@@ -127,7 +127,7 @@ function mostrarPreviaImagem() {
 campoImagem.addEventListener('change', mostrarPreviaImagem);
 
 if (dropzone) {
-    const TIPOS_ACEITOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const TIPOS_ACEITOS = ['image/jpeg', 'image/png', 'image/webp'];
 
     const impedirPadrao = (evento) => {
         evento.preventDefault();
@@ -156,7 +156,7 @@ if (dropzone) {
         if (!arquivo) return;
 
         if (!TIPOS_ACEITOS.includes(arquivo.type)) {
-            erroFormulario.textContent = 'Formato inválido. Envie PNG, JPG, WEBP ou GIF.';
+            erroFormulario.textContent = 'Formato inválido. Envie PNG, JPG, WEBP.';
             erroFormulario.hidden = false;
             return;
         }
