@@ -28,9 +28,14 @@ docker-compose up -d
 
 ## Decisões de UX/Produto
 
+### Foco principal do projeto
+
+Foquei em deixar o mais intuitivo possivel para o usario nao perder muito tempo tentando entender como funciona pra realizar a adição ou edição de cartas.
+
 ### 1. Layout minimalista e completo
 
-Pensei em deixar o layout o mais limpo e direto possível, sem muita informação na tela pra nao perder o foco do objetivo principal: a tabela das cartas e o formulário de cadastro/edição. A ideia é que o usuário consiga realizar todas as operações sem precisar navegar por muitas telas pra conseguir preencher a carta dele.
+Pensei em deixar o layout o mais limpo e direto possível, sem muita informação na tela pra nao perder o foco do objetivo principal: gerenciar de forma rapida e eficaz as cartas.
+A ideia é que o usuário consiga realizar todas as operações sem precisar navegar por muitas telas pra conseguir preencher ou editar as cartas.
 Isso facilitando pra quem nao tem muito conhecimento técnico, agilizando o processo de cadastro e edição das cartas.
 
 ### 2. Organização das cartas

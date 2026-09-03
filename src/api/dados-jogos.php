@@ -2,7 +2,7 @@
 
 /**
  * Fonte única das edições e raridades de cada card game.
- * Usada pelos endpoints de listagem e pela validação de cartas.
+ * IDEAL SER TROCADA PARA USO DIRETO DO BACKEND AO INVES DE HARDCODED
  */
 
 const EDICOES_POR_JOGO = [

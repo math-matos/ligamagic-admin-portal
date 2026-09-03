@@ -32,6 +32,7 @@ async function carregarContagens() {
             elemento.textContent = total === 1 ? '1 carta' : `${total} cartas`;
         });
     } catch (erro) {
+        console.error('Erro ao carregar contagens:', erro);
     }
 }
 
