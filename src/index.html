@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Administrativo - Login</title>
+    <link rel="stylesheet" href="assets/css/estilo.css">
+</head>
+<body class="pagina-login">
+    <main class="caixa-login">
+        <h1>Portal Administrativo</h1>
+        <p class="subtitulo">Gestão de Cartas</p>
+
+        <form id="form-login" novalidate>
+            <div class="campo">
+                <label for="usuario">Usuário</label>
+                <input type="text" id="usuario" name="usuario" autocomplete="username" required>
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+            </div>
+
+            <p id="erro-login" class="mensagem-erro" hidden></p>
+
+            <button type="submit" id="botao-entrar" class="botao botao-primario botao-largo">Entrar</button>
+        </form>
+    </main>
+
+    <script src="assets/js/login.js"></script>
+</body>
+</html>
