@@ -218,7 +218,7 @@ sidebarFiltros.addEventListener('change', (evento) => {
     }
 
     atualizarEstadoFiltros();
-    renderizarCartas();
+    resetarPaginaERenderizar();
 });
 
 botaoLimparFiltros.addEventListener('click', () => {
@@ -231,7 +231,7 @@ botaoLimparFiltros.addEventListener('click', () => {
     renderizarListaEdicao();
     filtrarOpcoesRaridade();
     atualizarEstadoFiltros();
-    renderizarCartas();
+    resetarPaginaERenderizar();
 });
 
 botaoAlternarFiltros.addEventListener('click', () => {

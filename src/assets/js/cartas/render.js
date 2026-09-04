@@ -85,13 +85,92 @@ function renderizarCartas() {
     painelLista.hidden = ehGrade || !temResultados;
     painelGrade.hidden = !ehGrade || !temResultados;
 
+    const totalPaginas = Math.max(1, Math.ceil(visiveis.length / ITENS_POR_PAGINA));
+    paginaAtual = Math.min(Math.max(paginaAtual, 1), totalPaginas);
+    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+    const paginaItens = visiveis.slice(inicio, inicio + ITENS_POR_PAGINA);
+
     if (ehGrade) {
         painelGrade.innerHTML = '';
-        visiveis.forEach((carta) => painelGrade.appendChild(criarCardCarta(carta)));
+        paginaItens.forEach((carta) => painelGrade.appendChild(criarCardCarta(carta)));
     } else {
         listaCartas.innerHTML = '';
-        visiveis.forEach((carta) => listaCartas.appendChild(criarLinhaCarta(carta)));
+        paginaItens.forEach((carta) => listaCartas.appendChild(criarLinhaCarta(carta)));
     }
+
+    renderizarPaginacao(visiveis.length, totalPaginas);
+}
+
+function resetarPaginaERenderizar() {
+    paginaAtual = 1;
+    renderizarCartas();
+}
+
+function irParaPagina(pagina) {
+    paginaAtual = pagina;
+    renderizarCartas();
+    document.getElementById('area-cartas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function calcularPaginasVisiveis(totalPaginas) {
+    const paginas = [];
+    for (let i = 1; i <= totalPaginas; i++) {
+        if (i === 1 || i === totalPaginas || (i >= paginaAtual - 1 && i <= paginaAtual + 1)) {
+            paginas.push(i);
+        } else if (paginas[paginas.length - 1] !== '…') {
+            paginas.push('…');
+        }
+    }
+    return paginas;
+}
+
+function criarBotaoNumeroPagina(numero) {
+    const botao = criarEl('button', 'paginacao-botao', String(numero));
+    botao.type = 'button';
+    if (numero === paginaAtual) {
+        botao.classList.add('ativo');
+        botao.setAttribute('aria-current', 'page');
+    }
+    botao.setAttribute('aria-label', `Página ${numero}`);
+    botao.addEventListener('click', () => irParaPagina(numero));
+    return botao;
+}
+
+function criarSetaPagina(ehAnterior, habilitado) {
+    const botao = criarEl('button', 'paginacao-botao paginacao-seta' + (ehAnterior ? ' paginacao-seta-anterior' : ''));
+    botao.type = 'button';
+    botao.disabled = !habilitado;
+    botao.setAttribute('aria-label', ehAnterior ? 'Página anterior' : 'Próxima página');
+    botao.innerHTML = ICONES.CHEVRON;
+    botao.addEventListener('click', () => irParaPagina(paginaAtual + (ehAnterior ? -1 : 1)));
+    return botao;
+}
+
+function renderizarPaginacao(totalItens, totalPaginas) {
+    paginacao.innerHTML = '';
+
+    if (totalItens === 0 || totalPaginas <= 1) {
+        paginacao.hidden = true;
+        return;
+    }
+
+    paginacao.hidden = false;
+
+    const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA + 1;
+    const fim = Math.min(paginaAtual * ITENS_POR_PAGINA, totalItens);
+    const info = criarEl('span', 'paginacao-info');
+    info.textContent = `${inicio}–${fim} de ${totalItens} cartas`;
+
+    const controles = criarEl('div', 'paginacao-controles');
+    controles.appendChild(criarSetaPagina(true, paginaAtual > 1));
+    calcularPaginasVisiveis(totalPaginas).forEach((item) => {
+        controles.appendChild(item === '…'
+            ? criarEl('span', 'paginacao-elipse', '…')
+            : criarBotaoNumeroPagina(item));
+    });
+    controles.appendChild(criarSetaPagina(false, paginaAtual < totalPaginas));
+
+    paginacao.append(info, controles);
 }
 
 function criarBotoesAcao(carta) {
@@ -215,4 +294,4 @@ botaoVerGrade.addEventListener('click', () => definirVisualizacao('grade'));
 botaoVerLista.setAttribute('aria-pressed', String(modoVisualizacao !== 'grade'));
 botaoVerGrade.setAttribute('aria-pressed', String(modoVisualizacao === 'grade'));
 
-campoBusca.addEventListener('input', renderizarCartas);
+campoBusca.addEventListener('input', resetarPaginaERenderizar);
