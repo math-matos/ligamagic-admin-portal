@@ -72,5 +72,6 @@ O projeto roda em três serviços separados:
 - [ ] Animações para transições entre páginas e ao entrar em uma pagina.
 - [ ] Implementar paginação vinda da api para a lista de cartas.
 - [ ] Cadastro multiplo de cartas.
+- [ ] Organizar em pastas o caso, conforme seu componente
 - [ ] Filtro por preço (maior e menor)
 - [x] Separar o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
