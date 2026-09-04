@@ -65,8 +65,14 @@ function filtrarCartas() {
     });
 }
 
+function ordenarAlfabeticamente(lista) {
+    return lista.sort((a, b) =>
+        (a.nome_en || '').localeCompare(b.nome_en || '', 'pt-BR', { sensitivity: 'base', numeric: true })
+    );
+}
+
 function renderizarCartas() {
-    const visiveis = filtrarCartas();
+    const visiveis = ordenarAlfabeticamente(filtrarCartas());
     const ehGrade = modoVisualizacao === 'grade';
     const temResultados = visiveis.length > 0;
 
