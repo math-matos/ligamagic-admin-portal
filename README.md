@@ -53,9 +53,17 @@ embaixo do campo específico pra não ter chance do usuario cadastrar errado ou 
 
 ============================================================================
 
-# TODO
+## Arquitetura (Docker Compose)
 
-- [ ] Separar depois o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
+O projeto roda em três serviços separados:
+
+- **frontend** (`nginx`): serve o frontend estático (HTML/CSS/JS) e atua como reverse
+  proxy, encaminhando `/api/` e `/uploads/` para o backend.
+- **backend** (`php-apache`): responsável apenas pela API PHP (`src/api`) e pelas
+  imagens em `uploads/`.
+- **db** (`mysql`): banco de dados, acessível apenas na rede privada.
+
+============================================================================
 
 # POSSIVEIS MELHORIAS
 
@@ -64,3 +72,4 @@ embaixo do campo específico pra não ter chance do usuario cadastrar errado ou 
 - [ ] Animações para transições entre páginas e ao entrar em uma pagina.
 - [ ] Implementar paginação para a lista de cartas.
 - [ ] Cadastro multiplo de cartas.
+- [x] Separar o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
