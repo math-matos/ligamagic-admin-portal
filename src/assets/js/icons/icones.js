@@ -104,9 +104,9 @@ const ICONES = {
         '<polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>',
 
     EMBLEMA_TODAS:
-        '<svg class="hub-emblema" viewBox="0 0 100 100" fill="none" stroke="#4338ca" stroke-width="5" stroke-linejoin="round">' +
-        '<rect x="16" y="16" width="30" height="30" rx="4" fill="#c7d2fe"></rect>' +
-        '<rect x="54" y="16" width="30" height="30" rx="4" fill="#c7d2fe"></rect>' +
-        '<rect x="16" y="54" width="30" height="30" rx="4" fill="#c7d2fe"></rect>' +
-        '<rect x="54" y="54" width="30" height="30" rx="4" fill="#c7d2fe"></rect></svg>'
+        '<svg class="hub-emblema" viewBox="0 0 100 100" fill="none" stroke="#e04e00" stroke-width="5" stroke-linejoin="round">' +
+        '<rect x="16" y="16" width="30" height="30" rx="4" fill="#ffc7a6"></rect>' +
+        '<rect x="54" y="16" width="30" height="30" rx="4" fill="#ffc7a6"></rect>' +
+        '<rect x="16" y="54" width="30" height="30" rx="4" fill="#ffc7a6"></rect>' +
+        '<rect x="54" y="54" width="30" height="30" rx="4" fill="#ffc7a6"></rect></svg>'
 };

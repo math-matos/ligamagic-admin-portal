@@ -42,7 +42,7 @@ Isso facilitando pra quem nao tem muito conhecimento técnico, agilizando o proc
 
 Resolvi organizar as cartas já separadas de acordo com seu tcg, aonde ele pode visualizar todas de uma vez mas o objetivo principal sendo ele selecionar o tcg primeiro e ai sim carregar as cartas daquele jogo, evitando que o usuário fique perdido com muitas cartas de jogos diferentes na tela.
 
-### 3. Selects encadeados (Card Game → Edição → Raridade)
+### 3. Filtro encadeado (Card Game → Edição → Raridade)
 
 No filtro ao lado esquerdo (sidebar), deixei os selects para serem filtrados com base no jogo que escolher pra nao dar chance do usuario escolher uma edição ou raridade que nao existe para aquele jogo. Isso também se aplica no formulário de cadastro/edição, onde o usuário só consegue cadastrar uma carta com base no jogo que ele escolheu.
 
@@ -72,4 +72,5 @@ O projeto roda em três serviços separados:
 - [ ] Animações para transições entre páginas e ao entrar em uma pagina.
 - [ ] Implementar paginação para a lista de cartas.
 - [ ] Cadastro multiplo de cartas.
+- [ ] Filtro por preço (maior e menor)
 - [x] Separar o backend para um service no docker-compose.yml, para que o backend possa ser escalado separadamente do frontend.
