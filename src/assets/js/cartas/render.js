@@ -66,8 +66,9 @@ function filtrarCartas() {
 }
 
 function ordenarAlfabeticamente(lista) {
+    const fator = ordemAlfabetica === 'desc' ? -1 : 1;
     return lista.sort((a, b) =>
-        (a.nome_en || '').localeCompare(b.nome_en || '', 'pt-BR', { sensitivity: 'base', numeric: true })
+        fator * (a.nome_en || '').localeCompare(b.nome_en || '', 'pt-BR', { sensitivity: 'base', numeric: true })
     );
 }
 
@@ -299,5 +300,25 @@ botaoVerGrade.addEventListener('click', () => definirVisualizacao('grade'));
 
 botaoVerLista.setAttribute('aria-pressed', String(modoVisualizacao !== 'grade'));
 botaoVerGrade.setAttribute('aria-pressed', String(modoVisualizacao === 'grade'));
+
+function atualizarBotaoOrdenar() {
+    const ehDesc = ordemAlfabetica === 'desc';
+    botaoOrdenar.setAttribute('aria-pressed', String(ehDesc));
+    botaoOrdenar.title = ehDesc ? 'Ordenar de Z a A' : 'Ordenar de A a Z';
+    rotuloOrdenar.textContent = ehDesc ? 'Z-A' : 'A-Z';
+}
+
+function definirOrdem(ordem) {
+    ordemAlfabetica = ordem;
+    localStorage.setItem(CHAVE_ORDEM, ordem);
+    atualizarBotaoOrdenar();
+    resetarPaginaERenderizar();
+}
+
+botaoOrdenar.addEventListener('click', () => {
+    definirOrdem(ordemAlfabetica === 'asc' ? 'desc' : 'asc');
+});
+
+atualizarBotaoOrdenar();
 
 campoBusca.addEventListener('input', resetarPaginaERenderizar);

@@ -11,6 +11,8 @@ const estadoVazioDica = document.querySelector('.estado-vazio-dica');
 const botaoVazioNovaCarta = document.getElementById('botao-vazio-nova-carta');
 const campoBusca = document.getElementById('campo-busca');
 const paginacao = document.getElementById('paginacao');
+const botaoOrdenar = document.getElementById('botao-ordenar');
+const rotuloOrdenar = document.getElementById('rotulo-ordenar');
 
 const sidebarFiltros = document.getElementById('filtros-sidebar');
 const backdropFiltros = document.getElementById('filtros-backdrop');
@@ -43,6 +45,9 @@ let modoVisualizacao = localStorage.getItem(CHAVE_VISUALIZACAO) === 'lista' ? 'l
 
 const ITENS_POR_PAGINA = 24;
 let paginaAtual = 1;
+
+const CHAVE_ORDEM = 'cartas-ordem';
+let ordemAlfabetica = localStorage.getItem(CHAVE_ORDEM) === 'desc' ? 'desc' : 'asc';
 
 function chaveEdicao(carta) {
     return `${carta.card_game}::${carta.edicao_id}`;

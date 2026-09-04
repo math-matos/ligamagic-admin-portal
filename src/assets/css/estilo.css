@@ -1195,6 +1195,19 @@ a { color: var(--primaria); }
     flex-shrink: 0;
 }
 
+.botao-ordenar {
+    flex-shrink: 0;
+}
+.botao-ordenar #rotulo-ordenar {
+    min-width: 2ch;
+    text-align: left;
+}
+.botao-ordenar[aria-pressed="true"] {
+    border-color: var(--primaria);
+    color: var(--primaria);
+}
+.botao-ordenar[aria-pressed="true"] svg { color: var(--primaria); }
+
 /* Tabela */
 .tabela-container {
     background-color: var(--surface);
