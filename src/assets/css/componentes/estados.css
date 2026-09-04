@@ -1,0 +1,50 @@
+.skeleton {
+    display: block;
+    border-radius: var(--r-sm);
+    background: linear-gradient(100deg, var(--gray-100) 30%, var(--gray-200) 50%, var(--gray-100) 70%);
+    background-size: 200% 100%;
+    animation: brilho 1.3s ease-in-out infinite;
+}
+.skeleton-miniatura { width: 42px; height: 58px; border-radius: var(--r-sm); }
+.skeleton-linha { height: 0.8rem; }
+.skeleton-chip { height: 1.3rem; width: 5.5rem; border-radius: var(--r-full); }
+
+@keyframes brilho {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.estado-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3.5rem 2rem;
+    text-align: center;
+    color: var(--texto-suave);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sombra-sm);
+}
+.estado-vazio[hidden] { display: none; }
+
+.estado-vazio-icone {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 0.4rem;
+    border-radius: var(--r-full);
+    background-color: var(--surface-2);
+    color: var(--gray-400);
+}
+.estado-vazio-icone svg { width: 1.6rem; height: 1.6rem; }
+
+#estado-vazio-texto {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+.estado-vazio-dica { font-size: var(--fs-sm); }
+.estado-vazio .botao { margin-top: 0.75rem; }

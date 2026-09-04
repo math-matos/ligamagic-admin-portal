@@ -1,0 +1,55 @@
+.pagina-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background:
+        linear-gradient(160deg, rgba(20, 20, 24, 0.78), rgba(20, 20, 24, 0.55) 45%, rgba(255, 90, 0, 0.42)),
+        url("../../img/login-fundo.png") center / cover no-repeat;
+}
+
+.caixa-login {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--primaria);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sombra-lg);
+    padding: 2.5rem 2.25rem;
+    text-align: center;
+}
+
+.caixa-login .marca {
+    justify-content: center;
+    margin-bottom: 1.75rem;
+}
+
+.caixa-login h1 {
+    font-size: var(--fs-2xl);
+    margin-bottom: 0.35rem;
+}
+
+.caixa-login .subtitulo {
+    color: var(--texto-suave);
+    font-size: var(--fs-base);
+    margin-bottom: 2rem;
+}
+
+.caixa-login form { text-align: left; }
+
+.caixa-login .botao-largo { margin-top: 0.35rem; }
+
+.link-rodape {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.caixa-login a {
+    color: var(--primaria);
+    font-weight: 600;
+    text-decoration: none;
+}
+.caixa-login a:hover { text-decoration: underline; }

@@ -1,0 +1,100 @@
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-400-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-500-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-700-normal.woff2) format("woff2");
+}
+@font-face {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-900-normal.woff2) format("woff2");
+}
+
+:root {
+    --gray-50:  #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e6eaf1;
+    --gray-300: #cdd5e0;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --gray-900: #0f172a;
+
+    --indigo-50:  #fff3ec;
+    --indigo-100: #ffe2d1;
+    --indigo-200: #ffc7a6;
+    --indigo-500: #ff7a33;
+    --indigo-600: #ff5a00;
+    --indigo-700: #e04e00;
+
+    --bg:            #f4f5f7;
+    --surface:       #ffffff;
+    --surface-2:     #f7f8fa;
+    --border:        var(--gray-200);
+    --border-forte:  var(--gray-300);
+
+    --texto:         var(--gray-800);
+    --texto-forte:   var(--gray-900);
+    --texto-suave:   var(--gray-500);
+    --placeholder:   var(--gray-500);
+
+    --primaria:        var(--indigo-600);
+    --primaria-escura: var(--indigo-700);
+    --primaria-suave:  var(--indigo-50);
+    --primaria-anel:   rgba(255, 90, 0, 0.26);
+
+    --sucesso:      #22b14c;
+    --sucesso-bg:   #e3f6e9;
+    --sucesso-tx:   #137430;
+    --perigo:       #dc2626;
+    --perigo-escura:#b91c1c;
+    --perigo-bg:    #fee2e2;
+    --perigo-tx:    #b91c1c;
+    --aviso-bg:     #fef3c7;
+    --aviso-tx:     #92400e;
+    --info-bg:      #dbeafe;
+    --info-tx:      #1e40af;
+
+    --r-sm:  4px;
+    --r:     6px;
+    --r-lg:  9px;
+    --r-xl:  16px;
+    --r-full:999px;
+
+    --sombra-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 1px rgba(15, 23, 42, 0.04);
+    --sombra:    0 2px 6px -1px rgba(15, 23, 42, 0.08), 0 1px 3px -1px rgba(15, 23, 42, 0.06);
+    --sombra-md: 0 10px 24px -6px rgba(15, 23, 42, 0.12), 0 4px 10px -4px rgba(15, 23, 42, 0.08);
+    --sombra-lg: 0 28px 56px -16px rgba(15, 23, 42, 0.26), 0 10px 24px -12px rgba(15, 23, 42, 0.14);
+    --anel-foco: 0 0 0 3px var(--primaria-anel);
+
+    --fonte: "Roboto", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fs-xs:   0.75rem;
+    --fs-sm:   0.8125rem;
+    --fs-base: 0.9375rem;
+    --fs-md:   1rem;
+    --fs-lg:   1.125rem;
+    --fs-xl:   1.375rem;
+    --fs-2xl:  1.75rem;
+
+    --t-rapido: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+    --t:        180ms cubic-bezier(0.4, 0, 0.2, 1);
+}

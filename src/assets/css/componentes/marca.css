@@ -1,0 +1,38 @@
+.marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 700;
+    color: var(--texto-forte);
+    letter-spacing: -0.02em;
+}
+
+.marca-simbolo {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--r);
+    background: linear-gradient(140deg, var(--indigo-500), var(--indigo-700));
+    color: #ffffff;
+    box-shadow: var(--sombra-sm), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+}
+
+.marca-simbolo svg { width: 1.35rem; height: 1.35rem; }
+
+.marca-simbolo:has(img) {
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+
+.marca-simbolo img {
+    display: block;
+    height: 2.25rem;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}

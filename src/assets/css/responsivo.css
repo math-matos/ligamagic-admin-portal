@@ -1,0 +1,79 @@
+@media (max-width: 960px) {
+  .conteudo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 60;
+    width: min(320px, 85vw);
+    max-height: none;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid var(--border);
+    box-shadow: var(--sombra-lg);
+    transform: translateX(-100%);
+    transition: transform var(--t);
+  }
+  .filtros-sidebar.aberta {
+    transform: translateX(0);
+  }
+
+  .filtros-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background-color: rgba(15, 23, 42, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--t);
+  }
+  .filtros-backdrop.aberta {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .botao-filtros-mobile {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 640px) {
+  .cabecalho {
+    padding: 0.8rem 1rem;
+  }
+  .cabecalho-usuario .botao-fantasma span {
+    display: none;
+  }
+  .barra-acoes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .barra-acoes .campo-icone {
+    max-width: none;
+  }
+  .barra-acoes .botao-primario {
+    flex: 1;
+  }
+  .barra-acoes .botao-filtros-mobile {
+    width: 100%;
+  }
+  .modal-caixa {
+    padding: 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

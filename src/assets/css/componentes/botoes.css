@@ -1,0 +1,92 @@
+.botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.05rem;
+    border: 1px solid transparent;
+    border-radius: var(--r);
+    font-family: inherit;
+    font-size: var(--fs-base);
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color var(--t), border-color var(--t),
+                box-shadow var(--t), transform var(--t-rapido), color var(--t);
+}
+
+.botao:active:not(:disabled) { transform: translateY(1px); }
+
+.botao:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.botao .icone {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.botao-primario {
+    background-color: var(--primaria);
+    color: #ffffff;
+    box-shadow: var(--sombra-sm);
+}
+.botao-primario:hover:not(:disabled) {
+    background-color: var(--primaria-escura);
+    box-shadow: var(--sombra-md);
+}
+
+.botao-perigo {
+    background-color: var(--perigo);
+    color: #ffffff;
+    box-shadow: var(--sombra-sm);
+}
+.botao-perigo:hover:not(:disabled) {
+    background-color: var(--perigo-escura);
+    box-shadow: var(--sombra-md);
+}
+
+.botao-neutro {
+    background-color: var(--surface);
+    color: var(--gray-700);
+    border-color: var(--border-forte);
+}
+.botao-neutro:hover:not(:disabled) {
+    background-color: var(--surface-2);
+    border-color: var(--gray-400);
+    color: var(--texto-forte);
+}
+
+.botao-fantasma {
+    background-color: transparent;
+    color: var(--gray-600);
+    border-color: transparent;
+    padding: 0.5rem 0.85rem;
+}
+.botao-fantasma:hover:not(:disabled) {
+    background-color: var(--gray-100);
+    color: var(--texto-forte);
+}
+
+.botao-excluir {
+    background-color: var(--perigo-bg);
+    border-color: transparent;
+    color: var(--perigo-tx);
+}
+.botao-excluir:hover:not(:disabled) {
+    background-color: var(--perigo);
+    color: #ffffff;
+}
+
+.botao-largo { width: 100%; }
+
+.botao-pequeno {
+    padding: 0.42rem 0.7rem;
+    font-size: var(--fs-sm);
+    border-radius: var(--r-sm);
+    gap: 0.35rem;
+}
