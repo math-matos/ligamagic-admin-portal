@@ -262,9 +262,9 @@ function criarCardCarta(carta) {
     } else {
         areaImagem.appendChild(criarIconeSemImagem('carta-sem-imagem'));
     }
-    areaImagem.appendChild(criarChipJogo(carta));
 
     const corpo = criarEl('div', 'carta-card-corpo');
+    corpo.appendChild(criarChipJogo(carta));
     corpo.appendChild(comBandeira(criarEl('span', 'carta-card-nome'), ICONES.BANDEIRA_EUA, carta.nome_en));
 
     if (carta.nome_pt) {

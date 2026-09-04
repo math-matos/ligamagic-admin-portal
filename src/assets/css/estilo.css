@@ -1035,12 +1035,6 @@ a { color: var(--primaria); }
     border-bottom: 1px dashed var(--border);
 }
 .carta-card-imagem .carta-sem-imagem svg { width: 2.25rem; height: 2.25rem; }
-.carta-card-imagem .chip {
-    position: absolute;
-    bottom: 0.55rem;
-    left: 0.55rem;
-    box-shadow: var(--sombra-sm);
-}
 
 .carta-card-corpo {
     display: flex;
@@ -1048,6 +1042,9 @@ a { color: var(--primaria); }
     gap: 0.3rem;
     padding: 0.85rem 0.9rem 0.9rem;
     flex: 1;
+}
+.carta-card-corpo > .chip {
+    align-self: flex-start;
 }
 
 .carta-card-nome {
