@@ -1037,7 +1037,7 @@ a { color: var(--primaria); }
 .carta-card-imagem .carta-sem-imagem svg { width: 2.25rem; height: 2.25rem; }
 .carta-card-imagem .chip {
     position: absolute;
-    top: 0.55rem;
+    bottom: 0.55rem;
     left: 0.55rem;
     box-shadow: var(--sombra-sm);
 }
